@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register - Ocean View Resort</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="card" style="max-width: 400px; margin: 100px auto;">
+  <h2>Customer Registration</h2>
+  <input type="text" id="regUser" placeholder="Choose a Username" required>
+  <input type="password" id="regPass" placeholder="Choose a Password" required>
+  <button onclick="register()">Create Account</button>
+  <p id="regStatus"></p>
+  <p style="text-align: center; margin-top: 15px;">
+    <a href="index.html">Back to Login</a>
+  </p>
+</div>
+
+<script src="js/auth.js"></script>
+<script>
+  async function register() {
+    const data = {
+      username: document.getElementById("regUser").value,
+      passwordHash: document.getElementById("regPass").value,
+      role: "CUSTOMER"
+    };
+
+    try {
+      const response = await fetch(API_BASE + 'users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        alert("Registration Successful! You can now login.");
+        window.location.href = "index.html";
+      } else {
+        document.getElementById("regStatus").style.color = "red";
+        document.getElementById("regStatus").innerText = "Username already exists.";
+      }
+    } catch (error) {
+      document.getElementById("regStatus").innerText = "Server Error";
+    }
+  }
+</script>
+</body>
+</html>
