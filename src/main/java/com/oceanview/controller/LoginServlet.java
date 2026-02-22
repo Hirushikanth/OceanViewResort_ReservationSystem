@@ -30,7 +30,7 @@ public class LoginServlet extends HttpServlet {
 
             User user = userDAO.authenticate(loginRequest.getUsername(), loginRequest.getPasswordHash());
 
-            if (user == null) {
+            if (user != null) {
 
                 String token = SessionManager.getInstance().createSession(user.getUsername());
 
