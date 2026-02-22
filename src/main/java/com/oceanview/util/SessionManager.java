@@ -1,12 +1,13 @@
 package com.oceanview.util;
 
+import com.oceanview.model.User;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class SessionManager {
     private static SessionManager instance;
-    private Map<String, String> activeSessions = new HashMap<>();
+    private Map<String, User> activeSessions = new HashMap<>();
 
     private SessionManager() {
     }
@@ -15,9 +16,14 @@ public class SessionManager {
         return instance;
     }
 
-    public String createSession(String username) {
+    public String createSession(User user) {
         String token = UUID.randomUUID().toString();
-        activeSessions.put(token, username);
+        User safeUser = new User();
+        safeUser.setId(user.getId());
+        safeUser.setUsername(user.getUsername());
+        safeUser.setRole(user.getRole());
+
+        activeSessions.put(token, safeUser);
         return token;
     }
 
@@ -25,7 +31,7 @@ public class SessionManager {
         return activeSessions.containsKey(token);
     }
 
-    public String getUser(String token) {
+    public User getUser(String token) {
         return activeSessions.get(token);
     }
 

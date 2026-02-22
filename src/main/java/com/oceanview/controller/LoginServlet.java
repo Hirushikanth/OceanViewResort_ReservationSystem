@@ -32,12 +32,13 @@ public class LoginServlet extends HttpServlet {
 
             if (user != null) {
 
-                String token = SessionManager.getInstance().createSession(user.getUsername());
+                String token = SessionManager.getInstance().createSession(user);
 
-                Map<String, String> responseMap = new HashMap<>();
+                Map<String, Object> responseMap = new HashMap<>();
                 responseMap.put("message", "Login Successful");
                 responseMap.put("token", token);
                 responseMap.put("role", user.getRole());
+                responseMap.put("id", user.getId());
 
                 resp.setStatus(HttpServletResponse.SC_OK);
                 mapper.writeValue(resp.getWriter(), responseMap);
