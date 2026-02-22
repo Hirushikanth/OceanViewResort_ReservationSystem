@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ocean View Resort - Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+    <h1>Ocean View Resort</h1>
+    <button onclick="logout()">Logout</button>
+</header>
+
+<main>
+    <section class="card">
+        <h2>New Reservation</h2>
+        <form id="reservationForm">
+            <label>Guest Name:</label>
+            <input type="text" id="guestName" required>
+
+            <label>Room Type:</label>
+            <select id="roomType">
+                <option value="Single">Single ($100)</option>
+                <option value="Double">Double ($150)</option>
+                <option value="Suite">Suite ($250)</option>
+            </select>
+
+            <label>Contact Number:</label>
+            <input type="text" id="contact" required>
+
+            <label>Check-In:</label>
+            <input type="date" id="checkIn" required>
+
+            <label>Check-Out:</label>
+            <input type="date" id="checkOut" required>
+
+            <button type="submit">Book Room</button>
+        </form>
+        <p id="msg"></p>
+    </section>
+
+    <section class="card">
+        <h2>Current Reservations</h2>
+        <button onclick="loadReservations()">Refresh List</button>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Guest</th>
+                <th>Room</th>
+                <th>Dates</th>
+                <th>Total Cost</th>
+            </tr>
+            </thead>
+            <tbody id="resTableBody">
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<script src="js/app.js"></script>
+</body>
+</html>

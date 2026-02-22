@@ -29,9 +29,6 @@
         const data = { username: user, passwordHash: pass };
 
         try {
-            // IMPORTANT: The URL must match your Deployment Context
-            // If your URL is localhost:8080/OceanViewResort_war_exploded/, use that.
-            // We will fix the URL in Step 2.
             const response = await fetch('api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -40,9 +37,8 @@
 
             if (response.ok) {
                 const result = await response.json();
-                document.getElementById("status").style.color = "green";
-                document.getElementById("status").innerText = "Success! Token: " + result.token;
-                console.log(result);
+                localStorage.setItem("token", result.token);
+                window.location.href = "dashboard.html";
             } else {
                 document.getElementById("status").style.color = "red";
                 document.getElementById("status").innerText = "Login Failed";
