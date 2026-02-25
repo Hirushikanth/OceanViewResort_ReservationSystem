@@ -1,17 +1,18 @@
 package com.oceanview.util;
 
 import com.oceanview.model.User;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionManager {
     private static SessionManager instance;
-    private Map<String, User> activeSessions = new HashMap<>();
 
-    private SessionManager() {
-    }
-    public static SessionManager getInstance() {
+    private Map<String, User> activeSessions = new ConcurrentHashMap<>();
+
+    private SessionManager() {}
+
+    public static synchronized SessionManager getInstance() {
         if (instance == null) instance = new SessionManager();
         return instance;
     }
@@ -28,14 +29,16 @@ public class SessionManager {
     }
 
     public boolean isValid(String token) {
-        return activeSessions.containsKey(token);
+        return token != null && activeSessions.containsKey(token);
     }
 
     public User getUser(String token) {
-        return activeSessions.get(token);
+        return (token != null) ? activeSessions.get(token) : null;
     }
 
     public void invalidate(String token) {
-        activeSessions.remove(token);
+        if (token != null) {
+            activeSessions.remove(token);
+        }
     }
 }

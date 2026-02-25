@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard - Ocean View</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .full-width { grid-column: span 2; }
+        .status-select { padding: 5px; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Admin Panel</h1>
+    <button onclick="logout()">Logout</button>
+</header>
+
+<main>
+    <!-- 1. Reports Section -->
+    <section class="card">
+        <h2>Business Overview</h2>
+        <p>Total Revenue (Confirmed): <strong id="totalRevenue">$0.00</strong></p>
+    </section>
+
+    <div class="grid-container">
+        <!-- 2. Room Management -->
+        <section class="card">
+            <h2>Add New Room</h2>
+            <form id="addRoomForm">
+                <input type="text" id="roomNum" placeholder="Room Number (e.g. 101)" required>
+                <select id="roomType">
+                    <option value="Single">Single</option>
+                    <option value="Double">Double</option>
+                    <option value="Suite">Suite</option>
+                </select>
+                <input type="number" id="roomPrice" placeholder="Price per Night" required>
+                <button type="submit">Add Room</button>
+            </form>
+        </section>
+
+        <!-- 3. Staff Management -->
+        <section class="card">
+            <h2>Add Staff Member</h2>
+            <form id="addStaffForm">
+                <input type="text" id="staffUser" placeholder="Username" required>
+                <input type="password" id="staffPass" placeholder="Password" required>
+                <button type="submit">Create Staff Account</button>
+            </form>
+            <h3>Existing Staff</h3>
+            <ul id="staffList"></ul>
+        </section>
+    </div>
+
+    <!-- 4. Booking Management -->
+    <section class="card full-width">
+        <h2>All Bookings Management</h2>
+        <button onclick="loadAllBookings()">Refresh List</button>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Guest (ID)</th>
+                <th>Room</th>
+                <th>Dates</th>
+                <th>Cost</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="adminBookingsTable"></tbody>
+        </table>
+    </section>
+
+    <div id="assignRoomModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
+        <div class="card" style="margin: 10% auto; max-width: 400px; padding: 20px;">
+            <h3>Assign Room</h3>
+            <p>Select a physical room for this booking:</p>
+
+            <select id="availableRoomsSelect">
+                <option>Loading rooms...</option>
+            </select>
+
+            <input type="hidden" id="modalBookingId">
+
+            <div style="margin-top: 20px; text-align: right;">
+                <button onclick="closeModal()" style="background:#ccc; color:black;">Cancel</button>
+                <button onclick="submitAssignment()" style="background:green;">Confirm Assignment</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="js/auth.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

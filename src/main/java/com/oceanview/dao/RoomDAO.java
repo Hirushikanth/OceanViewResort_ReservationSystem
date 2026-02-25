@@ -99,4 +99,42 @@ public class RoomDAO {
         }
         return null;
     }
+
+    public double getPriceByType(String type) {
+        String sql = "SELECT price_per_night FROM rooms WHERE room_type = ? LIMIT 1";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, type);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getDouble("price_per_night");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
+    public List<Room> getRoomTypes() {
+        List<Room> types = new ArrayList<>();
+        String sql = "SELECT DISTINCT room_type, price_per_night FROM rooms";
+
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Room r = new Room();
+                r.setRoomType(rs.getString("room_type"));
+                r.setPricePerNight(rs.getDouble("price_per_night"));
+                // ID and Number are null/0 here because this is just a catalog entry
+                types.add(r);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return types;
+    }
 }

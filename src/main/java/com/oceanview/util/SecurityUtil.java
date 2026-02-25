@@ -1,22 +1,17 @@
 package com.oceanview.util;
 
-import  java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class SecurityUtil {
 
-    public static String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(password.getBytes());
-            byte[] bytes = md.digest();
-            StringBuilder sb = new StringBuilder();
-            for (byte b : bytes) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("MD5 Algorithm not found", e);
+    public static String hashPassword(String plainTextPassword) {
+        return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
+    }
+
+    public static boolean checkPassword(String plainTextPassword, String hashedPassword) {
+        if (hashedPassword == null || !hashedPassword.startsWith("$2a$")) {
+            return false;
         }
+        return BCrypt.checkpw(plainTextPassword, hashedPassword);
     }
 }

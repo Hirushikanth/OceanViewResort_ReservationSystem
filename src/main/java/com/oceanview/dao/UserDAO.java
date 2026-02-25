@@ -4,36 +4,33 @@ import com.oceanview.config.DatabaseConnection;
 import com.oceanview.model.User;
 import com.oceanview.util.SecurityUtil;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
+import java.sql.*;
 import java.util.ArrayList;
-import java.sql.Statement;
+import java.util.List;
 
 public class UserDAO {
+
     public User authenticate(String username, String rawPassword) {
-        String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+        String sql = "SELECT * FROM users WHERE username = ?";
+
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            String hashedPassword = SecurityUtil.hashPassword(rawPassword);
-
             stmt.setString(1, username);
-            stmt.setString(2, hashedPassword);
-
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return new User(
-                        rs.getInt("id"),
-                        rs.getString("username"),
-                        rs.getString("password"),
-                        rs.getString("role")
-                );
+                String storedHash = rs.getString("password");
+                if (SecurityUtil.checkPassword(rawPassword, storedHash)) {
+                    return new User(
+                            rs.getInt("id"),
+                            rs.getString("username"),
+                            null, // Don't keep hash in memory after login
+                            rs.getString("role")
+                    );
+                }
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
@@ -45,7 +42,6 @@ public class UserDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, user.getUsername());
-            // Hash the password before saving
             stmt.setString(2, SecurityUtil.hashPassword(user.getPasswordHash()));
             stmt.setString(3, user.getRole());
 

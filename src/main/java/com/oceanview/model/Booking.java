@@ -6,7 +6,11 @@ public class Booking {
 
     private int id;
     private int customerId;
-    private int roomId;
+
+    private Integer roomId;
+
+    private String requestedType;
+
     private Date checkInDate;
     private Date checkOutDate;
     private double totalCost;
@@ -18,8 +22,10 @@ public class Booking {
     public void setId(int id) { this.id = id; }
     public int getCustomerId() { return customerId; }
     public void setCustomerId(int customerId) { this.customerId = customerId; }
-    public int getRoomId() { return roomId; }
-    public void setRoomId(int roomId) { this.roomId = roomId; }
+    public Integer getRoomId() { return roomId; }
+    public void setRoomId(Integer roomId) { this.roomId = roomId; }
+    public String getRequestedType() { return requestedType; }
+    public void setRequestedType(String requestedType) { this.requestedType = requestedType; }
     public Date getCheckInDate() { return checkInDate; }
     public void setCheckInDate(Date checkInDate) { this.checkInDate = checkInDate; }
     public Date getCheckOutDate() { return checkOutDate; }

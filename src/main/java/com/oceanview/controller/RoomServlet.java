@@ -25,32 +25,34 @@ public class RoomServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
 
-        String checkInStr = req.getParameter("checkIn");
-        String checkOutStr = req.getParameter("checkOut");
+        String token = req.getHeader("Authorization");
+        User currentUser = SessionManager.getInstance().getUser(token);
 
-        try {
+        String role = (currentUser != null) ? currentUser.getRole() : "GUEST";
+
+        if ("ADMIN".equals(role) || "STAFF".equals(role)) {
+
+            String checkInStr = req.getParameter("checkIn");
+            String checkOutStr = req.getParameter("checkOut");
+
             if (checkInStr != null && checkOutStr != null) {
-                Date checkIn = Date.valueOf(checkInStr);
-                Date checkOut = Date.valueOf(checkOutStr);
-
-                List<Room> availbleRooms = roomDAO.getAvailableRooms(checkIn, checkOut);
-                mapper.writeValue(resp.getWriter(), availbleRooms);
-            } else {
-                String token = req.getHeader("Authorization");
-                User currentUser = SessionManager.getInstance().getUser(token);
-
-                if (currentUser == null || "CUSTOMER".equals(currentUser.getRole())) {
-                    resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    resp.getWriter().write("{\"error\": \"Access Denied. Admins/Staff only.\"}");
-                    return;
+                try {
+                    Date checkIn = Date.valueOf(checkInStr);
+                    Date checkOut = Date.valueOf(checkOutStr);
+                    List<Room> availableRooms = roomDAO.getAvailableRooms(checkIn, checkOut);
+                    mapper.writeValue(resp.getWriter(), availableRooms);
+                } catch (IllegalArgumentException e) {
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    resp.getWriter().write("{\"error\": \"Invalid date format\"}");
                 }
-
+            } else {
                 List<Room> allRooms = roomDAO.getAllRooms();
                 mapper.writeValue(resp.getWriter(), allRooms);
             }
-        } catch (IllegalArgumentException e) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("{\"error\": \"Invalid date format. Use YYYY-MM-DD\"}");
+
+        } else {
+            List<Room> roomTypes = roomDAO.getRoomTypes();
+            mapper.writeValue(resp.getWriter(), roomTypes);
         }
     }
 
