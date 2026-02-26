@@ -6,27 +6,36 @@ import com.oceanview.model.Booking;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class BookingDAO {
 
     public boolean createBooking(Booking booking) {
-        String sql = "INSERT INTO bookings (customer_id, requested_type, room_id, check_in_date, check_out_date, total_cost, status) VALUES (?, ?, ?, ?, ?, ?, 'PENDING')";
+        String resNumber = "RES-" + UUID.randomUUID().toString().substring(0, 5).toUpperCase();
+        booking.setReservationNumber(resNumber);
+
+        String sql = "INSERT INTO bookings (reservation_number, customer_id, guest_name, address, contact_number, requested_type, room_id, check_in_date, check_out_date, total_cost, status) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'PENDING')";
 
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, booking.getCustomerId());
-            stmt.setString(2, booking.getRequestedType());
+            stmt.setString(1, booking.getReservationNumber());
+            stmt.setInt(2, booking.getCustomerId());
+            stmt.setString(3, booking.getGuestName());
+            stmt.setString(4, booking.getAddress());
+            stmt.setString(5, booking.getContactNumber());
+            stmt.setString(6, booking.getRequestedType());
 
             if (booking.getRoomId() == null) {
-                stmt.setNull(3, Types.INTEGER);
+                stmt.setNull(7, Types.INTEGER);
             } else {
-                stmt.setInt(3, booking.getRoomId());
+                stmt.setInt(7, booking.getRoomId());
             }
 
-            stmt.setDate(4, new java.sql.Date(booking.getCheckInDate().getTime()));
-            stmt.setDate(5, new java.sql.Date(booking.getCheckOutDate().getTime()));
-            stmt.setDouble(6, booking.getTotalCost());
+            stmt.setDate(8, new java.sql.Date(booking.getCheckInDate().getTime()));
+            stmt.setDate(9, new java.sql.Date(booking.getCheckOutDate().getTime()));
+            stmt.setDouble(10, booking.getTotalCost());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -52,14 +61,42 @@ public class BookingDAO {
         return list.isEmpty() ? null : list.get(0);
     }
 
+    public Booking getBookingByResNumber(String resNumber) {
+        String sql = "SELECT * FROM bookings WHERE reservation_number = ?";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, resNumber);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) return mapRow(rs);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean isRoomAvailable(int roomId, Date checkIn, Date checkOut) {
+        String sql = "SELECT COUNT(*) FROM bookings WHERE room_id = ? " +
+                "AND status != 'CANCELLED' " +
+                "AND (check_in_date < ? AND check_out_date > ?)";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, roomId);
+            stmt.setDate(2, new java.sql.Date(checkOut.getTime()));
+            stmt.setDate(3, new java.sql.Date(checkIn.getTime()));
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) return rs.getInt(1) == 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public boolean assignRoomAndConfirm(int bookingId, int roomId) {
         String sql = "UPDATE bookings SET room_id = ?, status = 'CONFIRMED' WHERE id = ?";
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setInt(1, roomId);
             stmt.setInt(2, bookingId);
-
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -71,10 +108,8 @@ public class BookingDAO {
         String sql = "UPDATE bookings SET status = ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setString(1, status);
             stmt.setInt(2, bookingId);
-
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -87,25 +122,8 @@ public class BookingDAO {
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
-
             while (rs.next()) {
-                Booking b = new Booking();
-                b.setId(rs.getInt("id"));
-                b.setCustomerId(rs.getInt("customer_id"));
-                b.setRequestedType(rs.getString("requested_type"));
-
-                int rId = rs.getInt("room_id");
-                if (rs.wasNull()) {
-                    b.setRoomId(null);
-                } else {
-                    b.setRoomId(rId);
-                }
-
-                b.setCheckInDate(rs.getDate("check_in_date"));
-                b.setCheckOutDate(rs.getDate("check_out_date"));
-                b.setTotalCost(rs.getDouble("total_cost"));
-                b.setStatus(rs.getString("status"));
-                list.add(b);
+                list.add(mapRow(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -113,29 +131,31 @@ public class BookingDAO {
         return list;
     }
 
-    public boolean isRoomAvailable(int roomId, Date checkIn, Date checkOut) {
-        // Logic: Count bookings for this room that are NOT cancelled
-        // and Overlap with the requested dates.
-        // Overlap Formula: (StartA < EndB) and (EndA > StartB)
+    // Extracted mapping logic to avoid duplication
+    private Booking mapRow(ResultSet rs) throws SQLException {
+        Booking b = new Booking();
+        b.setId(rs.getInt("id"));
 
-        String sql = "SELECT COUNT(*) FROM bookings WHERE room_id = ? " +
-                "AND status != 'CANCELLED' " +
-                "AND (check_in_date < ? AND check_out_date > ?)";
+        // NEW: Map the new columns
+        b.setReservationNumber(rs.getString("reservation_number"));
+        b.setGuestName(rs.getString("guest_name"));
+        b.setAddress(rs.getString("address"));
+        b.setContactNumber(rs.getString("contact_number"));
 
-        try (Connection conn = DatabaseConnection.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        b.setCustomerId(rs.getInt("customer_id"));
+        b.setRequestedType(rs.getString("requested_type"));
 
-            stmt.setInt(1, roomId);
-            stmt.setDate(2, new java.sql.Date(checkOut.getTime()));
-            stmt.setDate(3, new java.sql.Date(checkIn.getTime()));
-
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) == 0; // Returns TRUE if count is 0 (Room is free)
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        int rId = rs.getInt("room_id");
+        if (rs.wasNull()) {
+            b.setRoomId(null);
+        } else {
+            b.setRoomId(rId);
         }
-        return false; // Assume occupied on error for safety
+
+        b.setCheckInDate(rs.getDate("check_in_date"));
+        b.setCheckOutDate(rs.getDate("check_out_date"));
+        b.setTotalCost(rs.getDouble("total_cost"));
+        b.setStatus(rs.getString("status"));
+        return b;
     }
 }

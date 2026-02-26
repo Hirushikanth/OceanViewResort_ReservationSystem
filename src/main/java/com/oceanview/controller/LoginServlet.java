@@ -53,4 +53,23 @@ public class LoginServlet extends HttpServlet {
             resp.getWriter().write("{\"error\": \"Invalid JSON Format\"}");
         }
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // LOGOUT FUNCTIONALITY
+        resp.setContentType("application/json");
+
+        String token = req.getHeader("Authorization");
+
+        if (token != null && SessionManager.getInstance().isValid(token)) {
+            // Remove token from valid sessions
+            SessionManager.getInstance().invalidate(token);
+
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.getWriter().write("{\"message\": \"System Exited. You have logged out successfully.\"}");
+        } else {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\": \"Invalid or missing session token.\"}");
+        }
+    }
 }
