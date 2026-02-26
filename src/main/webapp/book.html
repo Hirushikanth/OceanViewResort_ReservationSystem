@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Room - Ocean View Resort</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: { primary: "#13b6ec", secondary: "#0e4b5d", surface: "#ffffff", background: "#f8fafc" },
+          fontFamily: { sans: ['"Plus Jakarta Sans"', "sans-serif"] }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+
+<!-- Header -->
+<header class="bg-white border-b border-slate-100 px-6 py-4 sticky top-0 z-50 shadow-sm">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
+      <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        <span class="material-symbols-outlined text-2xl">water_lux</span>
+      </div>
+      <h2 class="text-xl font-bold tracking-tight text-secondary">Ocean View Resort</h2>
+    </div>
+    <nav class="flex items-center gap-6">
+      <a href="dashboard.html" class="text-sm font-bold text-slate-500 hover:text-primary transition-colors">My Dashboard</a>
+      <button id="logoutBtn" class="text-sm font-bold text-red-500 hover:text-red-700 transition-colors flex items-center gap-1">
+        <span class="material-symbols-outlined text-lg">logout</span> Logout
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="flex-grow container mx-auto px-4 py-12">
+  <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
+
+    <div class="bg-secondary p-8 text-white relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+      <h1 class="text-3xl font-bold mb-2 relative z-10">Make a Reservation</h1>
+      <p class="text-slate-300 relative z-10">Fill in your details to secure your stay.</p>
+    </div>
+
+    <form id="booking-form" class="p-8 space-y-6">
+
+      <!-- Guest Details -->
+      <div class="space-y-4">
+        <h3 class="text-lg font-bold text-secondary flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">person</span> Guest Information
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-1">Full Name</label>
+            <input type="text" id="guestName" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary" placeholder="e.g. John Doe">
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-1">Contact Number</label>
+            <input type="tel" id="contactNumber" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary" placeholder="e.g. 077 123 4567">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-1">Billing Address</label>
+          <textarea id="address" required rows="2" class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary" placeholder="e.g. 123 Beach Road, Galle"></textarea>
+        </div>
+      </div>
+
+      <hr class="border-slate-100">
+
+      <!-- Room & Dates -->
+      <div class="space-y-4">
+        <h3 class="text-lg font-bold text-secondary flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">bed</span> Stay Details
+        </h3>
+
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-1">Room Type</label>
+          <!-- DYNAMIC DROPDOWN -->
+          <select id="requestedType" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary">
+            <option value="" disabled selected>Loading room types...</option>
+          </select>
+          <p class="text-xs text-slate-500 mt-1">Prices are per night.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-1">Check-In Date</label>
+            <input type="date" id="checkInDate" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary">
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-1">Check-Out Date</label>
+            <input type="date" id="checkOutDate" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary">
+          </div>
+        </div>
+      </div>
+
+      <!-- Error/Success Messages -->
+      <div id="form-error" class="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium hidden border border-red-100"></div>
+      <div id="form-success" class="bg-green-50 text-green-600 p-3 rounded-lg text-sm font-medium hidden border border-green-100"></div>
+
+      <!-- Submit -->
+      <div class="pt-4">
+        <button type="submit" class="w-full bg-primary hover:bg-sky-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-primary/20 flex justify-center items-center gap-2 text-lg">
+          <span>Request Booking</span>
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+        <p class="text-center text-xs text-slate-400 mt-3">You won't be charged until confirmation.</p>
+      </div>
+    </form>
+  </div>
+</main>
+
+<footer class="bg-white border-t border-slate-100 py-6 text-center text-slate-400 text-sm">
+  &copy; 2023 Ocean View Resort. All rights reserved.
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>
