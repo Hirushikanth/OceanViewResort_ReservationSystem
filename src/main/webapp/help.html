@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Help Guide - Ocean View Resort</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: "#13b6ec", secondary: "#0e4b5d" },
+          fontFamily: { sans: ['"Plus Jakarta Sans"', "sans-serif"] }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+<!-- Header -->
+<header class="bg-white border-b border-slate-100 px-6 py-4 sticky top-0 z-50">
+  <div class="max-w-4xl mx-auto flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="material-symbols-outlined text-3xl text-primary">help</span>
+      <h1 class="text-xl font-bold text-secondary">System Guide</h1>
+    </div>
+    <a href="dashboard.html" class="text-sm font-bold text-slate-500 hover:text-primary">Back to Dashboard</a>
+  </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-4 py-12">
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
+    <h2 class="text-2xl font-bold text-secondary mb-6">How to use the Reservation System</h2>
+
+    <div id="help-content" class="space-y-6">
+      <p class="text-slate-400 italic">Loading guide...</p>
+    </div>
+
+    <div class="mt-12 p-6 bg-sky-50 rounded-xl border border-sky-100">
+      <h3 class="font-bold text-sky-800 mb-2 flex items-center gap-2">
+        <span class="material-symbols-outlined">info</span> Note on Room Assignment
+      </h3>
+      <p class="text-sm text-sky-700">
+        The system automatically checks for double-bookings. If you see a "Conflict" error when assigning a room, please choose a different Room Number or reject the booking.
+      </p>
+    </div>
+  </div>
+</main>
+
+<script src="js/help.js"></script>
+</body>
+</html>
