@@ -1,33 +1,42 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    // Define these LOCALLY inside the function to avoid conflicts with app.js
     const localToken = localStorage.getItem('token');
     const localRole = localStorage.getItem('role');
     const localUser = localStorage.getItem('username');
 
-    // --- 1. SETUP UI BASED ON ROLE ---
     if (!localToken) {
         window.location.href = 'login.html';
         return;
     }
 
-    // Update Welcome Message
     const welcomeEl = document.getElementById('welcomeMsg');
     if(welcomeEl && localUser) {
         welcomeEl.textContent = `Welcome, ${localUser} (${localRole})`;
     }
 
-    // Show Correct Action Bar
+    // --- SETUP UI BASED ON ROLE ---
     if (localRole === 'CUSTOMER') {
         const custActions = document.getElementById('customer-actions');
         if(custActions) custActions.classList.remove('hidden');
-        loadBookings('/bookings'); // Load user history
+        loadBookings('/bookings');
     } else {
         const staffActions = document.getElementById('staff-actions');
-        if(staffActions) staffActions.classList.remove('hidden');
-        loadBookings('/bookings?status=PENDING'); // Load pending by default
+        if(staffActions) {
+            staffActions.classList.remove('hidden');
 
-        // Listen for filter changes
+            // NEW: Add "Manage Staff" button ONLY for ADMIN
+            if (localRole === 'ADMIN') {
+                const adminBtnHtml = `
+                    <a href="staff.html" class="flex items-center gap-2 bg-secondary hover:bg-slate-700 text-white px-4 py-2.5 rounded-xl font-bold transition-all text-sm ml-4">
+                        <span class="material-symbols-outlined text-sm">manage_accounts</span> Manage Staff
+                    </a>
+                `;
+                staffActions.insertAdjacentHTML('beforeend', adminBtnHtml);
+            }
+        }
+
+        loadBookings('/bookings?status=PENDING');
+
         const statusFilter = document.getElementById('statusFilter');
         if(statusFilter) {
             statusFilter.addEventListener('change', function() {
@@ -38,11 +47,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // --- 2. LOAD BOOKINGS FUNCTION ---
     async function loadBookings(endpoint) {
         const tableBody = document.getElementById('bookings-table-body');
         if(!tableBody) return;
-
         tableBody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-400">Loading reservations...</td></tr>';
 
         try {
@@ -58,15 +65,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 tableBody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-red-500 font-bold">Failed to load data.</td></tr>';
             }
         } catch (error) {
-            console.error(error);
             tableBody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-red-500 font-bold">Connection error.</td></tr>';
         }
     }
 
-    // --- 3. RENDER TABLE FUNCTION ---
     function renderTable(bookings) {
         const tableBody = document.getElementById('bookings-table-body');
-
         if (bookings.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-400 italic">No reservations found.</td></tr>';
             return;
@@ -78,49 +82,35 @@ document.addEventListener('DOMContentLoaded', function() {
             const row = document.createElement('tr');
             row.className = "hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0";
 
-            // Status Badge Logic
             let statusBadge = '';
-            if (b.status === 'CONFIRMED') {
-                statusBadge = '<span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-bold text-green-700 ring-1 ring-inset ring-green-600/20">Confirmed</span>';
-            } else if (b.status === 'PENDING') {
-                statusBadge = '<span class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-bold text-yellow-800 ring-1 ring-inset ring-yellow-600/20">Pending</span>';
-            } else {
-                statusBadge = '<span class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-bold text-red-700 ring-1 ring-inset ring-red-600/10">Cancelled</span>';
-            }
+            if (b.status === 'CONFIRMED') statusBadge = '<span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-bold text-green-700 ring-1 ring-inset ring-green-600/20">Confirmed</span>';
+            else if (b.status === 'PENDING') statusBadge = '<span class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-bold text-yellow-800 ring-1 ring-inset ring-yellow-600/20">Pending</span>';
+            else statusBadge = '<span class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-bold text-red-700 ring-1 ring-inset ring-red-600/10">Cancelled</span>';
 
-            // Action Button Logic
             let actionBtn = '';
             if (localRole === 'CUSTOMER') {
-                if (b.status === 'CONFIRMED') {
-                    // Link to Bill (Phase 5)
-                    actionBtn = `<a href="bill.html?id=${b.id}" target="_blank" class="inline-flex items-center gap-1 text-primary hover:text-sky-600 font-bold text-xs transition-colors"><span class="material-symbols-outlined text-sm">receipt_long</span> Bill</a>`;
-                }
+                if (b.status === 'CONFIRMED') actionBtn = `<a href="bill.html?id=${b.id}" target="_blank" class="inline-flex items-center gap-1 text-primary hover:text-sky-600 font-bold text-xs transition-colors"><span class="material-symbols-outlined text-sm">receipt_long</span> Bill</a>`;
             } else {
-                // STAFF: Manage Button (Only for Pending)
-                if (b.status === 'PENDING') {
-                    // We pass the ID to the global function logic (Phase 4)
-                    actionBtn = `<button onclick="openStaffModal(${b.id})" class="bg-secondary hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm">Manage</button>`;
-                } else if (b.status === 'CONFIRMED') {
-                    // Show assigned room
-                    actionBtn = `<span class="text-slate-500 text-xs font-mono bg-slate-100 px-2 py-1 rounded">Room ${b.roomId}</span>`;
-                }
+                if (b.status === 'PENDING') actionBtn = `<button onclick="openStaffModal(${b.id})" class="bg-secondary hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm">Manage</button>`;
+                else if (b.status === 'CONFIRMED') actionBtn = `<span class="text-slate-500 text-xs font-mono bg-slate-100 px-2 py-1 rounded">Room ${b.roomId}</span>`;
             }
 
-            // Fallback for null reservation numbers (old data)
             const resRef = b.reservationNumber ? b.reservationNumber : `#${b.id}`;
 
+            // FIXED: Added Address and styled Contact Info nicely
             row.innerHTML = `
                 <td class="p-4 font-mono text-xs text-slate-500 select-all">${resRef}</td>
                 <td class="p-4 font-bold text-secondary text-sm">${b.requestedType}</td>
                 <td class="p-4 text-slate-500 text-xs">
                     <div class="flex flex-col">
-                        <span>Check-In: <strong>${b.checkInDate}</strong></span>
-                        <span>Check-Out: <strong>${b.checkOutDate}</strong></span>
+                        <span>In: <strong>${b.checkInDate}</strong></span>
+                        <span>Out: <strong>${b.checkOutDate}</strong></span>
                     </div>
                 </td>
                 <td class="p-4">
                     <div class="font-bold text-slate-700 text-sm">${b.guestName}</div>
-                    <div class="text-xs text-slate-400">${b.contactNumber}</div>
+                    <div class="text-xs text-slate-500 flex items-center gap-1 mt-1"><span class="material-symbols-outlined text-[14px]">call</span> ${b.contactNumber}</div>
+                    <div class="text-xs text-slate-400 flex items-start gap-1 mt-1 max-w-[200px]"><span class="material-symbols-outlined text-[14px]">location_on</span> <span class="truncate">${b.address}</span></div>
                 </td>
                 <td class="p-4">${statusBadge}</td>
                 <td class="p-4 text-right">${actionBtn}</td>
@@ -128,12 +118,8 @@ document.addEventListener('DOMContentLoaded', function() {
             tableBody.appendChild(row);
         });
     }
-
 });
 
-// --- 4. GLOBAL SCOPE FUNCTIONS (Called by HTML onclick attributes) ---
-
-// Open Modal
 function openStaffModal(bookingId) {
     const modal = document.getElementById('staffModal');
     const inputId = document.getElementById('modalBookingId');
@@ -142,27 +128,21 @@ function openStaffModal(bookingId) {
 
     if(modal && inputId) {
         inputId.value = bookingId;
-        roomInput.value = ''; // Clear previous input
-        errorDiv.classList.add('hidden'); // Hide errors
+        roomInput.value = '';
+        errorDiv.classList.add('hidden');
         modal.classList.remove('hidden');
     }
 }
 
-// Close Modal
 function closeModal() {
     const modal = document.getElementById('staffModal');
-    if(modal) {
-        modal.classList.add('hidden');
-    }
+    if(modal) modal.classList.add('hidden');
 }
 
-// Confirm Booking Logic (Phase 4)
 async function confirmBookingAction() {
     const bookingId = document.getElementById('modalBookingId').value;
     const roomId = document.getElementById('assignRoomId').value;
     const errorDiv = document.getElementById('modal-error');
-
-    // Fetch token fresh from storage
     const authToken = localStorage.getItem('token');
 
     if (!roomId) {
@@ -174,25 +154,15 @@ async function confirmBookingAction() {
     try {
         const response = await fetch(`${API_BASE}/bookings`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': authToken
-            },
-            body: JSON.stringify({
-                id: parseInt(bookingId),
-                status: 'CONFIRMED',
-                roomId: parseInt(roomId)
-            })
+            headers: { 'Content-Type': 'application/json', 'Authorization': authToken },
+            body: JSON.stringify({ id: parseInt(bookingId), status: 'CONFIRMED', roomId: parseInt(roomId) })
         });
 
         const data = await response.json();
-
         if (response.ok) {
-            // Success!
             closeModal();
             window.location.reload();
         } else if (response.status === 409) {
-            // Conflict! Room occupied.
             errorDiv.textContent = "Error: Room is already occupied for these dates!";
             errorDiv.classList.remove('hidden');
         } else {
@@ -200,30 +170,21 @@ async function confirmBookingAction() {
             errorDiv.classList.remove('hidden');
         }
     } catch (err) {
-        console.error(err);
         errorDiv.textContent = "Server connection error.";
         errorDiv.classList.remove('hidden');
     }
 }
 
-// Cancel Booking Logic (Phase 4)
 async function cancelBookingAction() {
     const bookingId = document.getElementById('modalBookingId').value;
     const authToken = localStorage.getItem('token');
-
     if(!confirm("Are you sure you want to REJECT this booking?")) return;
 
     try {
         const response = await fetch(`${API_BASE}/bookings`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': authToken
-            },
-            body: JSON.stringify({
-                id: parseInt(bookingId),
-                status: 'CANCELLED'
-            })
+            headers: { 'Content-Type': 'application/json', 'Authorization': authToken },
+            body: JSON.stringify({ id: parseInt(bookingId), status: 'CANCELLED' })
         });
 
         if (response.ok) {

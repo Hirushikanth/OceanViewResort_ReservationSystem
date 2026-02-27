@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Staff - Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: "#13b6ec", secondary: "#0e4b5d" },
+          fontFamily: { sans: ['"Plus Jakarta Sans"', "sans-serif"] }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+
+<!-- Header -->
+<header class="bg-white border-b border-slate-100 px-6 py-4 sticky top-0 z-50 shadow-sm">
+  <div class="max-w-6xl mx-auto flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="material-symbols-outlined text-3xl text-primary">admin_panel_settings</span>
+      <h1 class="text-xl font-bold text-secondary">Admin Console</h1>
+    </div>
+    <a href="dashboard.html" class="text-sm font-bold text-slate-500 hover:text-primary transition-colors flex items-center gap-1">
+      <span class="material-symbols-outlined text-lg">arrow_back</span> Back to Dashboard
+    </a>
+  </div>
+</header>
+
+<main class="flex-grow max-w-6xl mx-auto px-4 py-8 w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+  <!-- Create Staff Form -->
+  <div class="lg:col-span-1">
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+      <h2 class="text-lg font-bold text-secondary mb-4 flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary">person_add</span> Register New Staff
+      </h2>
+
+      <form id="staff-form" class="space-y-4">
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-1">Staff Username / Email</label>
+          <input type="text" id="staffUser" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary" placeholder="staff@oceanview.com">
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-1">Temporary Password</label>
+          <input type="password" id="staffPass" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary" placeholder="••••••••">
+        </div>
+
+        <div id="form-msg" class="text-xs font-bold hidden p-2 rounded"></div>
+
+        <button type="submit" class="w-full bg-primary hover:bg-sky-500 text-white font-bold py-3 rounded-xl transition-all shadow-md">
+          Create Staff Account
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Staff List Table -->
+  <div class="lg:col-span-2">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      <div class="p-6 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+        <h2 class="text-lg font-bold text-secondary flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">badge</span> Active Staff Members
+        </h2>
+        <button onclick="loadStaff()" class="text-slate-400 hover:text-primary transition-colors">
+          <span class="material-symbols-outlined">refresh</span>
+        </button>
+      </div>
+
+      <table class="w-full text-left">
+        <thead class="bg-white border-b border-slate-100">
+        <tr>
+          <th class="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">ID</th>
+          <th class="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Username</th>
+          <th class="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Role</th>
+          <th class="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-right">Action</th>
+        </tr>
+        </thead>
+        <tbody id="staff-table-body" class="divide-y divide-slate-100 text-sm">
+        <tr><td colspan="4" class="p-8 text-center text-slate-400">Loading staff...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script src="js/staff.js"></script>
+</body>
+</html>
