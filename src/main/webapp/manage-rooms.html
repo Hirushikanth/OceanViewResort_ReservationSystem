@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Rooms - Admin Panel</title>
+  <link rel="icon" href="data:,">
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: "#13b6ec", secondary: "#0e4b5d" },
+          fontFamily: { sans: ['"Plus Jakarta Sans"', "sans-serif"] }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+
+<!-- Header -->
+<header class="bg-white border-b border-slate-100 px-6 py-4 sticky top-0 z-50 shadow-sm">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="material-symbols-outlined text-3xl text-primary">bedroom_parent</span>
+      <h1 class="text-xl font-bold text-secondary">Room Inventory</h1>
+    </div>
+    <a href="dashboard.html" class="text-sm font-bold text-slate-500 hover:text-primary transition-colors flex items-center gap-1">
+      <span class="material-symbols-outlined text-lg">arrow_back</span> Back to Dashboard
+    </a>
+  </div>
+</header>
+
+<main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+  <!-- Add Room Form -->
+  <div class="lg:col-span-1">
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 sticky top-24">
+      <h2 class="text-lg font-bold text-secondary mb-4 flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary">add_circle</span> Add New Room
+      </h2>
+
+      <form id="room-form" class="space-y-4">
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-1">Room Number</label>
+          <input type="text" id="roomNumber" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary" placeholder="e.g. 101, 305A">
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-1">Room Type</label>
+          <input type="text" id="roomType" list="roomTypesList" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary" placeholder="e.g. Oceanfront Villa">
+          <datalist id="roomTypesList">
+            <option value="Oceanfront Villa"></option>
+            <option value="Garden Suite"></option>
+            <option value="Penthouse Retreat"></option>
+            <option value="Deluxe Room"></option>
+            <option value="Standard Room"></option>
+          </datalist>
+          <p class="text-xs text-slate-400 mt-1">Select from list or type a new one.</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-1">Price Per Night ($)</label>
+          <input type="number" id="pricePerNight" step="0.01" min="0" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary" placeholder="0.00">
+        </div>
+
+        <div id="form-msg" class="text-xs font-bold hidden p-3 rounded-lg border"></div>
+
+        <button type="submit" class="w-full bg-primary hover:bg-sky-500 text-white font-bold py-3 rounded-xl transition-all shadow-md mt-2 flex justify-center items-center gap-2">
+          <span class="material-symbols-outlined">save</span> Save Room
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Room List Table -->
+  <div class="lg:col-span-2">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      <div class="p-6 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+        <h2 class="text-lg font-bold text-secondary flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">format_list_bulleted</span> All Rooms
+        </h2>
+        <button onclick="loadRooms()" class="text-slate-400 hover:text-primary transition-colors flex items-center gap-1 text-sm font-bold">
+          <span class="material-symbols-outlined text-lg">refresh</span> Refresh
+        </button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead class="bg-white border-b border-slate-100">
+          <tr>
+            <th class="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Room No.</th>
+            <th class="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Type</th>
+            <th class="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Price/Night</th>
+            <th class="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Status</th>
+          </tr>
+          </thead>
+          <tbody id="rooms-table-body" class="divide-y divide-slate-100 text-sm">
+          <tr><td colspan="4" class="p-8 text-center text-slate-400">Loading rooms...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="js/manage-rooms.js"></script>
+</body>
+</html>

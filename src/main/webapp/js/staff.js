@@ -1,4 +1,4 @@
-const API_BASE = "/OceanViewResort/api";
+const API_BASE = "/OceanView/api";
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -21,8 +21,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const username = document.getElementById('staffUser').value;
         const passwordHash = document.getElementById('staffPass').value;
+        const confirmPass = document.getElementById('staffPassConfirm').value; // NEW
+
         const msgDiv = document.getElementById('form-msg');
         const btn = this.querySelector('button');
+
+        // NEW: Check if passwords match
+        if (passwordHash !== confirmPass) {
+            msgDiv.textContent = "Error: Passwords do not match!";
+            msgDiv.className = "text-xs font-bold p-2 rounded bg-red-50 text-red-600 block";
+
+            // Clear the password fields so the user can try again
+            document.getElementById('staffPass').value = '';
+            document.getElementById('staffPassConfirm').value = '';
+            document.getElementById('staffPass').focus();
+
+            setTimeout(() => msgDiv.classList.add('hidden'), 3000);
+            return; // Stop execution, don't send to backend
+        }
 
         btn.disabled = true;
         btn.innerHTML = 'Creating...';

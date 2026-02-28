@@ -1,5 +1,3 @@
-// Fixed API BASE for standard deployment
-
 document.addEventListener('DOMContentLoaded', function() {
 
     const localToken = localStorage.getItem('token');
@@ -28,6 +26,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (localRole === 'ADMIN') {
                 const adminBtnHtml = `
+                    <a href="manage-rooms.html" class="flex items-center gap-2 bg-primary hover:bg-sky-500 text-white px-4 py-2.5 rounded-xl font-bold transition-all text-sm ml-4 shadow-sm">
+                        <span class="material-symbols-outlined text-sm">bed</span> Manage Rooms
+                    </a>
                     <a href="staff.html" class="flex items-center gap-2 bg-secondary hover:bg-slate-700 text-white px-4 py-2.5 rounded-xl font-bold transition-all text-sm ml-4">
                         <span class="material-symbols-outlined text-sm">manage_accounts</span> Manage Staff
                     </a>
