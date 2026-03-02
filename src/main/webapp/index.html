@@ -1,368 +1,483 @@
 <!DOCTYPE html>
-
-<html lang="en"><head>
+<html lang="en">
+<head>
     <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Ocean View Resort</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "#13b6ec",
-                        secondary: "#0e4b5d",
-                        accent: "#d4cbb8",
-                        "background-light": "#f8fafc",
-                        "background-dark": "#0f172a",
-                        "surface-light": "#ffffff",
-                        "surface-dark": "#1e293b",
-                        "text-main": "#1e293b",
-                        "text-muted": "#64748b",
-                        "text-light": "#f1f5f9",
-                    },
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', "sans-serif"],
-                    },
-                    borderRadius: {
-                        DEFAULT: "0.5rem",
-                        lg: "1rem",
-                        xl: "1.5rem",
-                        full: "9999px"
-                    },
-                },
-            },
-        }
-    </script>
+
+    <!-- Link to our new Global Vanilla CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Page Specific Styles for Index -->
     <style>
-        body {
-            font-family: "Plus Jakarta Sans", sans-serif;
+        /* --- HEADER OVERRIDES --- */
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
         }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        .nav-links a {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--secondary);
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 1.5rem;
+            background: linear-gradient(135deg, rgba(10, 46, 92, 0.9), rgba(0, 128, 128, 0.8)),
+            radial-gradient(circle at top right, #004d40, transparent 50%),
+            radial-gradient(circle at bottom left, #0a2e5c, transparent 50%);
+            background-color: var(--primary);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            margin-top: -70px; /* Pull up behind transparent header if needed, or leave normal */
+        }
+        .hero-content {
+            max-width: 800px;
+            z-index: 2;
+            animation: fadeIn 1s ease-out;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .hero-badge {
+            display: inline-block;
+            padding: 0.25rem 1rem;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+        .hero h1 {
+            font-size: 4rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .hero h1 span {
+            color: var(--accent);
+            font-style: italic;
+        }
+        .hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 2.5rem;
+        }
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .btn-outline-light {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            backdrop-filter: blur(5px);
+        }
+        .btn-outline-light:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Wave Divider */
+        .wave-container {
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+            z-index: 1;
+        }
+        .wave-container svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 80px;
+        }
+        .wave-container .shape-fill { fill: var(--bg-light); }
+
+        /* --- FEATURES STRIP --- */
+        .features-strip {
+            max-width: 1000px;
+            margin: -4rem auto 4rem auto;
+            position: relative;
+            z-index: 10;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+        }
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+        .feature-item:hover {
+            background-color: var(--bg-light);
+            transform: translateY(-5px);
+        }
+        .feature-item .material-symbols-outlined {
+            font-size: 2.5rem;
+            color: var(--secondary);
+        }
+
+        /* --- SUITES SECTION --- */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 3rem;
+        }
+        .section-header h2 { font-size: 2.5rem; }
+        .section-header span {
+            color: var(--secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        .suites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .suite-image {
+            height: 200px;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .suite-price {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.9);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .suite-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .suite-title { font-size: 1.25rem; color: var(--primary); }
+        .stars { color: #f59e0b; font-size: 1rem; }
+        .suite-desc { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.5; }
+        .suite-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        .suite-meta span { display: flex; align-items: center; gap: 0.25rem; }
+
+        /* --- CTA SECTION --- */
+        .cta-section {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: var(--radius-lg);
+            padding: 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            margin: 4rem 0;
+            box-shadow: var(--shadow-lg);
+        }
+        .cta-text h2 { color: white; font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .cta-text p { opacity: 0.8; font-size: 1.1rem; }
+
+        /* --- FOOTER --- */
+        .footer {
+            background-color: var(--surface);
+            border-top: 1px solid var(--border-color);
+            padding: 4rem 1.5rem 2rem;
+        }
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        .footer-col h4 { margin-bottom: 1.5rem; font-size: 1.1rem; }
+        .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+        .footer-links a { color: var(--text-muted); font-size: 0.875rem; }
+        .footer-links a:hover { color: var(--secondary); }
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero h1 { font-size: 2.5rem; }
+            .features-strip { grid-template-columns: 1fr 1fr; margin-top: 2rem; box-shadow: none; border: none; background: transparent; }
+            .cta-section { flex-direction: column; text-align: center; gap: 2rem; padding: 2rem; }
+            .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .footer-bottom { flex-direction: column; gap: 1rem; align-items: center; }
         }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-text-main dark:text-text-light transition-colors duration-300">
-<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
-    <!-- Header -->
-    <header class="flex items-center justify-between whitespace-nowrap border-b border-slate-100 dark:border-slate-800 bg-surface-light dark:bg-surface-dark px-6 py-4 lg:px-12 sticky top-0 z-50">
-        <div class="flex items-center gap-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <span class="material-symbols-outlined text-2xl">water_lux</span>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <div class="header-content">
+        <div class="logo-group" onclick="window.location.href='index.html'">
+            <div class="logo-icon">
+                <span class="material-symbols-outlined">water_lux</span>
             </div>
-            <h2 class="text-text-main dark:text-text-light text-xl font-bold leading-tight tracking-tight">Ocean View Resort</h2>
+            <h2>Ocean View Resort</h2>
         </div>
-        
-        <!-- Updated Navigation -->
-        <nav class="hidden md:flex flex-1 justify-center gap-8">
-            <a class="text-primary font-bold text-sm transition-colors" href="index.html">Home</a>
-            <a class="text-text-muted hover:text-primary dark:text-slate-400 dark:hover:text-primary text-sm font-medium transition-colors" href="#">Accommodations</a>
-            <a class="text-text-muted hover:text-primary dark:text-slate-400 dark:hover:text-primary text-sm font-medium transition-colors" href="#">Dining</a>
-            <a class="text-text-muted hover:text-primary transition-colors text-sm font-medium" href="help.html">Help Center</a>
+
+        <nav class="nav-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="#">Accommodations</a>
+            <a href="#">Dining</a>
+            <a href="help.html">Help Center</a>
         </nav>
 
-        <div class="flex items-center gap-4">
-            <!-- Added Login Link -->
-            <a href="login.html" class="text-sm font-bold text-text-muted hover:text-primary transition-colors">
-                Login / Register
-            </a>
-            <!-- Updated Book Button to link to booking page (Phase 2) -->
-            <a href="book.html" class="hidden sm:flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-primary hover:bg-sky-500 text-white text-sm font-bold leading-normal tracking-wide transition-colors shadow-lg shadow-primary/20">
-                <span class="truncate">Book Now</span>
-            </a>
+        <div class="header-actions">
+            <a href="login.html" class="text-sm" style="font-weight: 700; color: var(--text-muted);">Login / Register</a>
+            <a href="book.html" class="btn btn-primary">Book Now</a>
         </div>
-    </header>
-    <!-- Main Content -->
-    <main class="flex-grow">
-        <!-- Hero Section -->
-        <section class="relative w-full h-[600px] lg:h-[700px] flex items-center justify-center overflow-hidden">
-            <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" data-alt="Luxury infinity pool overlooking ocean sunset" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC2vOYaP1jHUkZO5TDyrun7rzs29t6NuupWjW80Xd3JlRWWwCEKdPhRO7tfr42DGXUqiStr2CWD-3NMaBqL_YHLI3M8kml-D1ILmA4ZIIsziG3iuy7cjHGvZMqtEyUuEFJ1wdywAot-E4u0lkFjP2fzZIUGbUTKXEAPCLZKKNK7QYlgMt7QGFiu12q_1nhNgBILhG566n5UWL0zTcOOJolr8WL8Uc0pxwo9fgkeqOgx4IkWWNqq4TlyN9Gx7ARFzyquxeFn8aSUNrs');">
-                <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60"></div>
-            </div>
-            <div class="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto space-y-6">
-<span class="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs font-semibold uppercase tracking-wider mb-2 animate-fade-in-up">
-                        Welcome to Paradise
-                    </span>
-                <h1 class="text-white text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight drop-shadow-sm">
-                    Experience Luxury <br/><span class="text-primary italic">by the Sea</span>
-                </h1>
-                <p class="text-slate-100 text-lg md:text-xl font-light leading-relaxed max-w-2xl drop-shadow-sm">
-                    Unwind in paradise at Ocean View Resort, where the azure sky meets the endless ocean in perfect harmony.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 mt-8">
-                    <button class="h-12 px-8 bg-primary hover:bg-sky-500 text-white rounded-full font-bold text-base transition-all transform hover:scale-105 shadow-xl shadow-primary/30">
-                        Book Your Stay
-                    </button>
-                    <button class="h-12 px-8 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-full font-bold text-base transition-all flex items-center gap-2">
-                        <span class="material-symbols-outlined text-lg">play_circle</span>
-                        Watch Video
-                    </button>
-                </div>
-            </div>
-        </section>
-        <!-- Features/Amenities Strip -->
-        <div class="relative z-20 -mt-10 max-w-6xl mx-auto px-4">
-            <div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-xl border border-slate-100 dark:border-slate-800 p-6 grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div class="flex flex-col items-center text-center gap-2 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors group">
-                    <span class="material-symbols-outlined text-3xl text-primary group-hover:scale-110 transition-transform">pool</span>
-                    <span class="text-sm font-semibold text-text-main dark:text-text-light">Infinity Pools</span>
-                </div>
-                <div class="flex flex-col items-center text-center gap-2 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors group">
-                    <span class="material-symbols-outlined text-3xl text-primary group-hover:scale-110 transition-transform">spa</span>
-                    <span class="text-sm font-semibold text-text-main dark:text-text-light">Luxury Spa</span>
-                </div>
-                <div class="flex flex-col items-center text-center gap-2 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors group">
-                    <span class="material-symbols-outlined text-3xl text-primary group-hover:scale-110 transition-transform">restaurant_menu</span>
-                    <span class="text-sm font-semibold text-text-main dark:text-text-light">Fine Dining</span>
-                </div>
-                <div class="flex flex-col items-center text-center gap-2 p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors group">
-                    <span class="material-symbols-outlined text-3xl text-primary group-hover:scale-110 transition-transform">scuba_diving</span>
-                    <span class="text-sm font-semibold text-text-main dark:text-text-light">Water Sports</span>
-                </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-badge">Welcome to Paradise</span>
+            <h1>Experience Luxury <br/><span>by the Sea</span></h1>
+            <p>Unwind in paradise at Ocean View Resort, where the azure sky meets the endless ocean in perfect harmony.</p>
+            <div class="hero-btns">
+                <a href="book.html" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem;">Book Your Stay</a>
+                <button class="btn btn-outline-light">
+                    <span class="material-symbols-outlined">play_circle</span> Watch Video
+                </button>
             </div>
         </div>
+
+        <!-- SVG Wave Divider -->
+        <div class="wave-container">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118.08,130.83,121.32,201.2,112.55,242.47,107.41,283.43,84.5,321.39,56.44Z" class="shape-fill"></path>
+            </svg>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Features Strip -->
+        <div class="features-strip">
+            <div class="feature-item">
+                <span class="material-symbols-outlined">pool</span>
+                <span style="font-weight: 700;">Infinity Pools</span>
+            </div>
+            <div class="feature-item">
+                <span class="material-symbols-outlined">spa</span>
+                <span style="font-weight: 700;">Luxury Spa</span>
+            </div>
+            <div class="feature-item">
+                <span class="material-symbols-outlined">restaurant_menu</span>
+                <span style="font-weight: 700;">Fine Dining</span>
+            </div>
+            <div class="feature-item">
+                <span class="material-symbols-outlined">scuba_diving</span>
+                <span style="font-weight: 700;">Water Sports</span>
+            </div>
+        </div>
+
         <!-- Suites Section -->
-        <section class="py-20 px-4 md:px-12 max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+        <section style="margin-top: 4rem;">
+            <div class="section-header">
                 <div>
-                    <h2 class="text-secondary dark:text-primary text-sm font-bold uppercase tracking-wider mb-2">Accommodations</h2>
-                    <h3 class="text-text-main dark:text-text-light text-3xl md:text-4xl font-bold leading-tight">Our Exclusive Suites</h3>
+                    <span>Accommodations</span>
+                    <h2>Our Exclusive Suites</h2>
                 </div>
-                <a class="hidden md:flex items-center gap-1 text-primary font-bold hover:gap-2 transition-all" href="#">
-                    View All Rooms <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                <a href="#" style="color: var(--secondary); font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                    View All Rooms <span class="material-symbols-outlined">arrow_forward</span>
                 </a>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <div class="suites-grid">
                 <!-- Card 1 -->
-                <div class="group flex flex-col gap-4 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-slate-700">
-                    <div class="relative overflow-hidden rounded-xl aspect-[4/3]">
-                        <div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Modern oceanfront villa bedroom interior" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC18bI0rd_cc4_uLfaTNGpd_jTafemTc6RvuM6AazPk1UoqcpZOnBkjNMo3ICUfCMv9IcqKUt5HmMJXL1P5FMsGVJmlg2gw7ke-OeB3698A8-yt_rj_FInLkiMsTJJSKORX4Rlltvj9nl4Sesw75l25wDSon5vvjg4MWoPrZgyT4cocf1ctzAqz15n4MRKr8mntzDjtpjEtv1hp1Nm7l40KIyPk9HTnHaKcg5fn1ffhrp1XSovQEUuba6LVQo1MuzXX0GfagJP8ttk');">
-                        </div>
-                        <div class="absolute top-3 right-3 bg-white/90 dark:bg-black/80 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-text-main dark:text-white">
-                            From $450/night
-                        </div>
+                <div class="card" style="padding: 1rem;">
+                    <div class="suite-image" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                        🏖️
+                        <div class="suite-price">From $450/night</div>
                     </div>
-                    <div class="px-2 pb-2">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="text-text-main dark:text-text-light text-xl font-bold group-hover:text-primary transition-colors">Oceanfront Villa</h4>
-                            <div class="flex text-amber-400 text-sm">
-                                <span class="material-symbols-outlined text-base fill-current">star</span>
-                                <span class="material-symbols-outlined text-base fill-current">star</span>
-                                <span class="material-symbols-outlined text-base fill-current">star</span>
-                                <span class="material-symbols-outlined text-base fill-current">star</span>
-                                <span class="material-symbols-outlined text-base fill-current">star</span>
-                            </div>
-                        </div>
-                        <p class="text-text-muted dark:text-slate-400 text-sm leading-relaxed mb-4 line-clamp-2">
-                            Wake up to the soothing sound of waves in our spacious villas located directly on the pristine beach sands.
-                        </p>
-                        <div class="flex items-center gap-4 text-xs text-text-muted dark:text-slate-500 mb-4 border-t border-slate-100 dark:border-slate-700 pt-4">
-                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base">king_bed</span> 2 Beds</span>
-                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base">square_foot</span> 120m²</span>
-                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base">person</span> 4 Guests</span>
-                        </div>
-                        <button class="w-full py-2.5 rounded-lg border border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-colors">
-                            View Details
-                        </button>
+                    <div class="suite-details">
+                        <h4 class="suite-title">Oceanfront Villa</h4>
+                        <div class="stars">★★★★★</div>
                     </div>
+                    <p class="suite-desc">Wake up to the soothing sound of waves in our spacious villas located directly on the pristine beach sands.</p>
+                    <div class="suite-meta">
+                        <span><span class="material-symbols-outlined" style="font-size: 1rem;">king_bed</span> 2 Beds</span>
+                        <span><span class="material-symbols-outlined" style="font-size: 1rem;">square_foot</span> 120m²</span>
+                        <span><span class="material-symbols-outlined" style="font-size: 1rem;">person</span> 4 Guests</span>
+                    </div>
+                    <button class="btn btn-secondary" style="width: 100%;">View Details</button>
                 </div>
+
                 <!-- Card 2 -->
-                <div class="group flex flex-col gap-4 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-slate-700">
-                    <div class="relative overflow-hidden rounded-xl aspect-[4/3]">
-                        <div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Lush tropical garden suite exterior view" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAzVrt8pXor5jb2PV2CUwDvndFPtYdeaLQiJp7rm_BxhvI4f32FcpBlsBAZ1OKuEkPhPvvz3xbtSCd-6dMtzg0oMz4ykPVDZZwEWCkyghlsUeAbiEfFdvFr6ZUAPY5uBAARpbxcPd4Hi6iNe2ObQ8vJVhCCGRYTmaH6182m9EfsdjOO_xVADPggTgrSMQW-_q31XXffdwq-ZCHoqZ5micFas8g-HZo0W1YrXR7-YqqqwaJzGmqn3arnIH80QqRpIxXCCBgq-wWNQLw');">
-                        </div>
-                        <div class="absolute top-3 right-3 bg-white/90 dark:bg-black/80 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-text-main dark:text-white">
-                            From $320/night
-                        </div>
+                <div class="card" style="padding: 1rem;">
+                    <div class="suite-image" style="background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);">
+                        🌴
+                        <div class="suite-price">From $320/night</div>
                     </div>
-                    <div class="px-2 pb-2">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="text-text-main dark:text-text-light text-xl font-bold group-hover:text-primary transition-colors">Garden Suite</h4>
-                            <div class="flex text-amber-400 text-sm">
-                                <span class="material-symbols-outlined text-base fill-current">star</span>
-                                <span class="material-symbols-outlined text-base fill-current">star</span>
-                                <span class="material-symbols-outlined text-base fill-current">star</span>
-                                <span class="material-symbols-outlined text-base fill-current">star</span>
-                                <span class="material-symbols-outlined text-base fill-current">star_half</span>
-                            </div>
-                        </div>
-                        <p class="text-text-muted dark:text-slate-400 text-sm leading-relaxed mb-4 line-clamp-2">
-                            Surrounded by lush tropical gardens, this suite is perfect for a peaceful and secluded romantic getaway.
-                        </p>
-                        <div class="flex items-center gap-4 text-xs text-text-muted dark:text-slate-500 mb-4 border-t border-slate-100 dark:border-slate-700 pt-4">
-                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base">king_bed</span> 1 Bed</span>
-                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base">square_foot</span> 85m²</span>
-                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base">person</span> 2 Guests</span>
-                        </div>
-                        <button class="w-full py-2.5 rounded-lg border border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-colors">
-                            View Details
-                        </button>
+                    <div class="suite-details">
+                        <h4 class="suite-title">Garden Suite</h4>
+                        <div class="stars">★★★★☆</div>
                     </div>
+                    <p class="suite-desc">Surrounded by lush tropical gardens, this suite is perfect for a peaceful and secluded romantic getaway.</p>
+                    <div class="suite-meta">
+                        <span><span class="material-symbols-outlined" style="font-size: 1rem;">king_bed</span> 1 Bed</span>
+                        <span><span class="material-symbols-outlined" style="font-size: 1rem;">square_foot</span> 85m²</span>
+                        <span><span class="material-symbols-outlined" style="font-size: 1rem;">person</span> 2 Guests</span>
+                    </div>
+                    <button class="btn btn-secondary" style="width: 100%;">View Details</button>
                 </div>
+
                 <!-- Card 3 -->
-                <div class="group flex flex-col gap-4 bg-white dark:bg-slate-800 rounded-2xl p-3 shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-slate-700">
-                    <div class="relative overflow-hidden rounded-xl aspect-[4/3]">
-                        <div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Luxury penthouse terrace with ocean view" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCm6fTnT3EsJBQnYZrwXEwC0vmJKiwt23DUjqr7k50KNQ4PsV2CXM_szyNYMmY6A0ED36tA1SCxKJjjH3Rl6CYUtPaKAZkkCRbzNFPqLgFJsIGJ6BiSoeFmE7mr-oqXV4Ed9x-L8l7Xm3YbgGsltH4JgDZ1xN6TSgH0ZHhc3zQvN8FyMM93s4xKwTEMkCFMF29yBcYNcWZ0UiiM0Vqw07kR57roGWc9ucpttJcaB7JdJwwvBb3QCvxJ2YTajg3_Ii6bZ3YpyhJ6FMU');">
-                        </div>
-                        <div class="absolute top-3 right-3 bg-white/90 dark:bg-black/80 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-text-main dark:text-white">
-                            From $850/night
-                        </div>
+                <div class="card" style="padding: 1rem;">
+                    <div class="suite-image" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);">
+                        🏙️
+                        <div class="suite-price">From $850/night</div>
                     </div>
-                    <div class="px-2 pb-2">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="text-text-main dark:text-text-light text-xl font-bold group-hover:text-primary transition-colors">Penthouse Retreat</h4>
-                            <div class="flex text-amber-400 text-sm">
-                                <span class="material-symbols-outlined text-base fill-current">star</span>
-                                <span class="material-symbols-outlined text-base fill-current">star</span>
-                                <span class="material-symbols-outlined text-base fill-current">star</span>
-                                <span class="material-symbols-outlined text-base fill-current">star</span>
-                                <span class="material-symbols-outlined text-base fill-current">star</span>
-                            </div>
-                        </div>
-                        <p class="text-text-muted dark:text-slate-400 text-sm leading-relaxed mb-4 line-clamp-2">
-                            The ultimate luxury experience featuring panoramic ocean views, a private terrace, and personal concierge.
-                        </p>
-                        <div class="flex items-center gap-4 text-xs text-text-muted dark:text-slate-500 mb-4 border-t border-slate-100 dark:border-slate-700 pt-4">
-                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base">king_bed</span> 3 Beds</span>
-                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base">square_foot</span> 250m²</span>
-                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base">person</span> 6 Guests</span>
-                        </div>
-                        <button class="w-full py-2.5 rounded-lg border border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-colors">
-                            View Details
-                        </button>
+                    <div class="suite-details">
+                        <h4 class="suite-title">Penthouse Retreat</h4>
+                        <div class="stars">★★★★★</div>
                     </div>
-                </div>
-            </div>
-            <div class="mt-8 flex justify-center md:hidden">
-                <a class="flex items-center gap-1 text-primary font-bold" href="#">
-                    View All Rooms <span class="material-symbols-outlined text-lg">arrow_forward</span>
-                </a>
-            </div>
-        </section>
-        <!-- Testimonial / Mood Section -->
-        <section class="bg-secondary/5 dark:bg-slate-800/50 py-20">
-            <div class="max-w-7xl mx-auto px-4 md:px-12 flex flex-col md:flex-row items-center gap-12">
-                <div class="flex-1 relative">
-                    <div class="relative z-10 rounded-2xl overflow-hidden shadow-2xl rotate-2">
-                        <img class="w-full h-auto object-cover" data-alt="Relaxing spa massage treatment scene" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCshYars371YbfLf9oyYfkNfFp22sxyO4oT56kppyztfIU5h9OoBerRVYvBAciEoGVB70ciawc-TM5BQzp91eJTNO0zOM-qXStfWbH0UPF7WShd_ZOsz7AEb4jTTzfd3ge4ZFWUrdy-s_7v5JLc92b8-l-IrcXp4ULrgESlshqvRTAPUez1-3RUGItpTVbleUOQrIKPuFyVSj2jWPzyll8pBOJT9eU6GuHSG2CCGZbpzIs6ua9WjIar137vwrrtFD7WyW7OP_GzL3w"/>
+                    <p class="suite-desc">The ultimate luxury experience featuring panoramic ocean views, a private terrace, and personal concierge.</p>
+                    <div class="suite-meta">
+                        <span><span class="material-symbols-outlined" style="font-size: 1rem;">king_bed</span> 3 Beds</span>
+                        <span><span class="material-symbols-outlined" style="font-size: 1rem;">square_foot</span> 250m²</span>
+                        <span><span class="material-symbols-outlined" style="font-size: 1rem;">person</span> 6 Guests</span>
                     </div>
-                    <div class="absolute -top-4 -left-4 w-full h-full border-2 border-primary/30 rounded-2xl -z-0 -rotate-2"></div>
-                </div>
-                <div class="flex-1 space-y-6">
-                    <span class="text-primary font-bold tracking-wider uppercase text-sm">Relax &amp; Rejuvenate</span>
-                    <h2 class="text-3xl md:text-4xl font-bold text-text-main dark:text-text-light">A Sanctuary for Your Senses</h2>
-                    <p class="text-text-muted dark:text-slate-400 text-lg leading-relaxed">
-                        "The moment we arrived, we felt the stress melt away. The attention to detail, the stunning views, and the exceptional service made this the best vacation of our lives."
-                    </p>
-                    <div class="flex items-center gap-4 pt-4">
-                        <div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
-                            <img class="w-full h-full object-cover" data-alt="Portrait of a smiling woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTO4xifO9VIxnCYie-FBrWU8FlDKoVhJFfVbWvZBZFFt1fsEfnc4T-R7aDzpgQKn-Y7av-R_oaqUZGPHmgpQJ-8bzfCZQ8efw-yBoA-o7Wgs_eW2ZnBuYheaKX9ZgHGNy9Axw29ZJpxHoK2tQvjY2EeSlusysGlcr8zdqddkK9TTlkUFgSj5VPr88hoLoVTw4cwUbEzv4ETZOI5l0YkrMR3JIBZOCUUaO08H8kaiXGrlqrb0tf9t8MpscIOUC_aFxIljN3gxQg7tw"/>
-                        </div>
-                        <div>
-                            <p class="font-bold text-text-main dark:text-text-light">Sarah Jenkins</p>
-                            <p class="text-sm text-text-muted dark:text-slate-500">Stayed in Oceanfront Villa</p>
-                        </div>
-                    </div>
+                    <button class="btn btn-secondary" style="width: 100%;">View Details</button>
                 </div>
             </div>
         </section>
+
         <!-- CTA Section -->
-        <section class="py-20 px-4 md:px-12">
-            <div class="max-w-5xl mx-auto bg-gradient-to-br from-secondary to-[#0a3542] dark:from-slate-800 dark:to-black rounded-3xl overflow-hidden shadow-2xl relative">
-                <!-- Decorative pattern -->
-                <div class="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-                <div class="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -ml-16 -mb-16 pointer-events-none"></div>
-                <div class="relative z-10 flex flex-col md:flex-row items-center justify-between p-10 md:p-16 gap-10">
-                    <div class="text-center md:text-left space-y-4 max-w-lg">
-                        <h2 class="text-3xl md:text-4xl font-bold text-white leading-tight">
-                            Ready for your dream vacation?
-                        </h2>
-                        <p class="text-slate-300 text-lg font-light">
-                            Book directly with us for the best rates, complimentary breakfast, and exclusive spa offers.
-                        </p>
-                    </div>
-                    <div class="flex flex-col gap-4 w-full md:w-auto">
-                        <button class="h-14 px-8 bg-primary hover:bg-sky-500 text-white rounded-xl font-bold text-lg shadow-lg shadow-black/20 transition-transform hover:scale-105 whitespace-nowrap">
-                            Check Availability
-                        </button>
-                        <p class="text-white/60 text-xs text-center">No credit card required for inquiry</p>
-                    </div>
-                </div>
+        <section class="cta-section">
+            <div class="cta-text">
+                <h2>Ready for your dream vacation?</h2>
+                <p>Book directly with us for the best rates, complimentary breakfast, and exclusive spa offers.</p>
+            </div>
+            <div>
+                <a href="book.html" class="btn btn-secondary" style="background-color: white; color: var(--primary); padding: 1rem 2rem; font-size: 1.1rem;">Check Availability</a>
             </div>
         </section>
-    </main>
-    <!-- Footer -->
-    <footer class="bg-surface-light dark:bg-surface-dark border-t border-slate-100 dark:border-slate-800 pt-16 pb-8 px-6 lg:px-12">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-            <div class="space-y-4">
-                <div class="flex items-center gap-2 text-text-main dark:text-text-light">
-                    <span class="material-symbols-outlined text-primary text-3xl">water_lux</span>
-                    <span class="text-lg font-bold">Ocean View Resort</span>
-                </div>
-                <p class="text-text-muted dark:text-slate-400 text-sm leading-relaxed">
-                    A luxury seaside sanctuary designed for those seeking peace, comfort, and unforgettable memories by the ocean.
-                </p>
-                <div class="flex gap-4">
-                    <a class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-text-muted hover:bg-primary hover:text-white transition-colors" href="#">
-                        <span class="text-xs font-bold">FB</span>
-                    </a>
-                    <a class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-text-muted hover:bg-primary hover:text-white transition-colors" href="#">
-                        <span class="text-xs font-bold">IG</span>
-                    </a>
-                    <a class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-text-muted hover:bg-primary hover:text-white transition-colors" href="#">
-                        <span class="text-xs font-bold">TW</span>
-                    </a>
-                </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-col">
+            <div class="logo-group" style="margin-bottom: 1rem;">
+                <span class="material-symbols-outlined text-primary">water_lux</span>
+                <span style="font-weight: 700; font-size: 1.25rem;">Ocean View Resort</span>
             </div>
-            <div>
-                <h4 class="font-bold text-text-main dark:text-text-light mb-6">Quick Links</h4>
-                <ul class="space-y-3 text-sm text-text-muted dark:text-slate-400">
-                    <li><a class="hover:text-primary transition-colors" href="#">About Us</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Accommodations</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Dining &amp; Bar</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Spa &amp; Wellness</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Contact</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-bold text-text-main dark:text-text-light mb-6">Contact Us</h4>
-                <ul class="space-y-4 text-sm text-text-muted dark:text-slate-400">
-                    <li class="flex items-start gap-3">
-                        <span class="material-symbols-outlined text-primary shrink-0">location_on</span>
-                        <span>123 Paradise Road, <br/>Coastal Bay, Maldives</span>
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-primary shrink-0">call</span>
-                        <span>+1 (555) 123-4567</span>
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-primary shrink-0">mail</span>
-                        <span>reservations@oceanview.com</span>
-                    </li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-bold text-text-main dark:text-text-light mb-6">Newsletter</h4>
-                <p class="text-sm text-text-muted dark:text-slate-400 mb-4">Subscribe to receive exclusive offers and news.</p>
-                <form class="flex flex-col gap-2">
-                    <input class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="Your email address" type="email"/>
-                    <button class="w-full py-2 bg-secondary dark:bg-slate-700 text-white text-sm font-bold rounded-lg hover:bg-opacity-90 transition-colors" type="submit">Subscribe</button>
-                </form>
-            </div>
+            <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1rem;">A luxury seaside sanctuary designed for those seeking peace, comfort, and unforgettable memories by the ocean.</p>
         </div>
-        <div class="border-t border-slate-100 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-text-muted dark:text-slate-500">
-            <p>© 2023 Ocean View Resort. All rights reserved.</p>
-            <div class="flex gap-6">
-                <a class="hover:text-primary" href="#">Privacy Policy</a>
-                <a class="hover:text-primary" href="#">Terms of Service</a>
-                <a class="hover:text-primary" href="#">Sitemap</a>
-            </div>
+
+        <div class="footer-col">
+            <h4>Quick Links</h4>
+            <ul class="footer-links">
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Accommodations</a></li>
+                <li><a href="#">Dining & Bar</a></li>
+                <li><a href="help.html">Help Center</a></li>
+            </ul>
         </div>
-    </footer>
-</div>
-</body></html>
+
+        <div class="footer-col">
+            <h4>Contact Us</h4>
+            <ul class="footer-links">
+                <li style="display: flex; gap: 0.5rem; color: var(--text-muted); font-size: 0.875rem;">
+                    <span class="material-symbols-outlined" style="font-size: 1.25rem; color: var(--secondary);">location_on</span>
+                    123 Paradise Road,<br/>Galle
+                </li>
+                <li style="display: flex; gap: 0.5rem; color: var(--text-muted); font-size: 0.875rem;">
+                    <span class="material-symbols-outlined" style="font-size: 1.25rem; color: var(--secondary);">call</span>
+                    +94 77 123 4567
+                </li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Newsletter</h4>
+            <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.5rem;">Subscribe to receive exclusive offers.</p>
+            <form style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <input type="email" class="form-input" placeholder="Your email address">
+                <button type="button" class="btn btn-primary">Subscribe</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2026 Ocean View Resort. All rights reserved.</p>
+        <div style="display: flex; gap: 1.5rem;">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

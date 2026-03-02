@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- 1. GLOBAL AUTH CHECK ---
     const token = localStorage.getItem('token');
-    // const role = localStorage.getItem('role'); // Not used yet
     const currentPath = window.location.pathname;
 
     // Check if user is logged in (skip for index/login)
@@ -54,9 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
     async function loadRoomTypes() {
         const typeSelect = document.getElementById('requestedType');
         try {
-            // Note: GET /api/rooms returns a list of rooms.
-            // In Phase 3 backend we made it return types for customers.
-            // Ensure you are sending the token!
             const response = await fetch(`${API_BASE}/rooms`, {
                 method: 'GET',
                 headers: { 'Authorization': token }
@@ -67,9 +63,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 typeSelect.innerHTML = '<option value="" disabled selected>Select Room Type</option>';
 
                 // We expect a list of objects with { roomType: "Deluxe", pricePerNight: 250.0 }
-                // Since the backend might return multiple rooms of same type, let's dedup logic here if needed,
-                // BUT your backend logic `roomDAO.getRoomTypes()` already returns DISTINCT types.
-
+                // Since the backend logic already returns DISTINCT types or we filter duplicates,
+                // we'll simply append them.
                 rooms.forEach(room => {
                     const opt = document.createElement('option');
                     opt.value = room.roomType;
@@ -96,10 +91,10 @@ document.addEventListener('DOMContentLoaded', function() {
         errorDiv.classList.add('hidden');
         successDiv.classList.add('hidden');
 
-        // Disable Button
+        // Disable Button (Using our new CSS class)
         const originalBtnText = submitBtn.innerHTML;
         submitBtn.disabled = true;
-        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        submitBtn.classList.add('btn-disabled');
         submitBtn.innerHTML = 'Processing...';
 
         // 1. Get Values
@@ -160,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showError("Server connection error.");
         } finally {
             if(!successDiv.classList.contains('hidden')) {
-                // Keep disabled on success
+                // Keep disabled on success to prevent double submission during redirect
             } else {
                 resetBtn(submitBtn, originalBtnText);
             }
@@ -174,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function resetBtn(btn, html) {
         btn.disabled = false;
-        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        btn.classList.remove('btn-disabled');
         btn.innerHTML = html;
     }
 

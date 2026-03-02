@@ -4,99 +4,100 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manage Staff - Admin Panel</title>
-  <link rel="icon" href="data:,">
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: { primary: "#13b6ec", secondary: "#0e4b5d" },
-          fontFamily: { sans: ['"Plus Jakarta Sans"', "sans-serif"] }
-        }
-      }
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 2rem;
     }
-  </script>
+    @media (max-width: 900px) {
+      .admin-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+<body>
 
 <!-- Header -->
-<header class="bg-white border-b border-slate-100 px-6 py-4 sticky top-0 z-50 shadow-sm">
-  <div class="max-w-6xl mx-auto flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <span class="material-symbols-outlined text-3xl text-primary">admin_panel_settings</span>
-      <h1 class="text-xl font-bold text-secondary">Admin Console</h1>
+<header class="header">
+  <div class="header-content">
+    <div class="logo-group">
+      <span class="material-symbols-outlined" style="font-size: 2rem;">admin_panel_settings</span>
+      <h2>Admin Console</h2>
     </div>
-    <a href="dashboard.html" class="text-sm font-bold text-slate-500 hover:text-primary transition-colors flex items-center gap-1">
-      <span class="material-symbols-outlined text-lg">arrow_back</span> Back to Dashboard
+    <a href="dashboard.html" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700; color: var(--text-muted);">
+      <span class="material-symbols-outlined">arrow_back</span> Back to Dashboard
     </a>
   </div>
 </header>
 
-<main class="flex-grow max-w-6xl mx-auto px-4 py-8 w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="container">
+  <div class="admin-grid">
 
-  <!-- Create Staff Form -->
-  <div class="lg:col-span-1">
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-      <h2 class="text-lg font-bold text-secondary mb-4 flex items-center gap-2">
-        <span class="material-symbols-outlined text-primary">person_add</span> Register New Staff
-      </h2>
+    <!-- Create Staff Form -->
+    <div>
+      <div class="card">
+        <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span class="material-symbols-outlined" style="color: var(--secondary);">person_add</span> Register Staff
+        </h3>
 
-      <form id="staff-form" class="space-y-4">
-        <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1">Staff Username / Email</label>
-          <input type="text" id="staffUser" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary" placeholder="staff@oceanview.com">
-        </div>
+        <form id="staff-form">
+          <div class="form-group">
+            <label class="form-label">Staff Username / Email</label>
+            <input type="text" id="staffUser" required class="form-input" placeholder="staff@oceanview.com">
+          </div>
 
-        <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1">Temporary Password</label>
-          <input type="password" id="staffPass" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary" placeholder="••••••••">
-        </div>
+          <div class="form-group">
+            <label class="form-label">Temporary Password</label>
+            <input type="password" id="staffPass" required class="form-input" placeholder="••••••••">
+          </div>
 
-        <!-- NEW: Confirm Password Field -->
-        <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1">Confirm Password</label>
-          <input type="password" id="staffPassConfirm" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary" placeholder="••••••••">
-        </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" id="staffPassConfirm" required class="form-input" placeholder="••••••••">
+          </div>
 
-        <div id="form-msg" class="text-xs font-bold hidden p-2 rounded"></div>
+          <div id="form-msg" class="alert hidden"></div>
 
-        <button type="submit" class="w-full bg-primary hover:bg-sky-500 text-white font-bold py-3 rounded-xl transition-all shadow-md">
-          Create Staff Account
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Staff List Table -->
-  <div class="lg:col-span-2">
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-      <div class="p-6 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-        <h2 class="text-lg font-bold text-secondary flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">badge</span> Active Staff Members
-        </h2>
-        <button onclick="loadStaff()" class="text-slate-400 hover:text-primary transition-colors">
-          <span class="material-symbols-outlined">refresh</span>
-        </button>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">
+            Create Staff Account
+          </button>
+        </form>
       </div>
-
-      <table class="w-full text-left">
-        <thead class="bg-white border-b border-slate-100">
-        <tr>
-          <th class="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">ID</th>
-          <th class="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Username</th>
-          <th class="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Role</th>
-          <th class="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-right">Action</th>
-        </tr>
-        </thead>
-        <tbody id="staff-table-body" class="divide-y divide-slate-100 text-sm">
-        <tr><td colspan="4" class="p-8 text-center text-slate-400">Loading staff...</td></tr>
-        </tbody>
-      </table>
     </div>
+
+    <!-- Staff List Table -->
+    <div>
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background-color: var(--bg-light);">
+          <h3 style="display: flex; align-items: center; gap: 0.5rem;">
+            <span class="material-symbols-outlined" style="color: var(--secondary);">badge</span> Active Staff
+          </h3>
+          <button onclick="loadStaff()" class="btn btn-secondary" style="background: transparent; color: var(--text-muted); box-shadow: none; padding: 0.5rem;">
+            <span class="material-symbols-outlined">refresh</span> Refresh
+          </button>
+        </div>
+
+        <div class="table-container" style="border: none; box-shadow: none;">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Role</th>
+              <th class="text-right">Action</th>
+            </tr>
+            </thead>
+            <tbody id="staff-table-body">
+            <tr><td colspan="4" class="text-center text-muted" style="padding: 2rem;">Loading staff...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </div>
-</main>
+</div>
 
 <script src="js/staff.js"></script>
 </body>

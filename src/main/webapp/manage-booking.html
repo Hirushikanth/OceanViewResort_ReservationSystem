@@ -4,104 +4,170 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Booking - Ocean View Resort</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { primary: "#13b6ec", secondary: "#0e4b5d", surface: "#ffffff", background: "#f8fafc" },
-                    fontFamily: { sans: ['"Plus Jakarta Sans"', "sans-serif"] }
-                }
+
+    <!-- Link Global CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Page Specific Styles -->
+    <style>
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .booking-details-card {
+            position: sticky;
+            top: 5rem;
+        }
+
+        .detail-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .detail-value {
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+        }
+
+        .floor-section {
+            background-color: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .floor-label {
+            min-width: 80px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            text-align: right;
+            padding-top: 1rem;
+        }
+
+        .room-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+            .floor-section {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .floor-label {
+                text-align: left;
+                padding-top: 0;
             }
         }
-    </script>
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+<body>
 
 <!-- Header -->
-<header class="bg-white border-b border-slate-100 px-6 py-4 sticky top-0 z-50 shadow-sm">
-    <div class="max-w-6xl mx-auto flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-3xl text-primary">assignment_turned_in</span>
-            <h1 class="text-xl font-bold text-secondary">Manage Booking</h1>
+<header class="header">
+    <div class="header-content">
+        <div class="logo-group">
+            <span class="material-symbols-outlined" style="font-size: 2rem;">assignment_turned_in</span>
+            <h2>Manage Booking</h2>
         </div>
-        <a href="dashboard.html" class="text-sm font-bold text-slate-500 hover:text-primary transition-colors flex items-center gap-1">
-            <span class="material-symbols-outlined text-lg">arrow_back</span> Back to Dashboard
+        <a href="dashboard.html" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700; color: var(--text-muted);">
+            <span class="material-symbols-outlined">arrow_back</span> Back to Dashboard
         </a>
     </div>
 </header>
 
-<main class="flex-grow max-w-6xl mx-auto px-4 py-8 w-full">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="container">
+    <div class="layout-grid">
 
         <!-- Left Column: Booking Details -->
-        <div class="lg:col-span-1 space-y-6">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <h2 class="text-sm font-bold uppercase text-slate-400 tracking-wider mb-4">Guest Details</h2>
-                <div class="space-y-4">
+        <div class="booking-details-card">
+            <div class="card">
+                <h3 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">Guest Details</h3>
+
+                <div class="detail-item">
+                    <div class="detail-label">Guest Name</div>
+                    <div class="detail-value" id="b-guest-name">Loading...</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Contact Number</div>
+                    <div class="detail-value" style="font-size: 1rem;" id="b-contact">...</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Requested Room Type</div>
+                    <span class="badge badge-pending" style="font-size: 0.875rem; margin-top: 0.5rem;" id="b-type">...</span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
                     <div>
-                        <p class="text-xs text-slate-500">Guest Name</p>
-                        <p class="font-bold text-slate-800 text-lg" id="b-guest-name">Loading...</p>
+                        <div class="detail-label">Check-In</div>
+                        <div class="detail-value" style="font-size: 1rem;" id="b-checkin">...</div>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-500">Contact Number</p>
-                        <p class="font-medium text-slate-700" id="b-contact">...</p>
-                    </div>
-                    <div>
-                        <p class="text-xs text-slate-500">Requested Room Type</p>
-                        <span class="inline-block mt-1 bg-sky-50 text-sky-700 px-3 py-1 rounded-lg text-sm font-bold border border-sky-100" id="b-type">...</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-100">
-                        <div>
-                            <p class="text-xs text-slate-500">Check-In</p>
-                            <p class="font-bold text-slate-700" id="b-checkin">...</p>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-500">Check-Out</p>
-                            <p class="font-bold text-slate-700" id="b-checkout">...</p>
-                        </div>
+                        <div class="detail-label">Check-Out</div>
+                        <div class="detail-value" style="font-size: 1rem;" id="b-checkout">...</div>
                     </div>
                 </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <h2 class="text-sm font-bold uppercase text-slate-400 tracking-wider mb-4">Actions</h2>
+            <div class="card" style="margin-top: 1.5rem;">
+                <h3 style="margin-bottom: 1rem;">Actions</h3>
 
-                <div id="action-error" class="hidden mb-4 p-3 bg-red-50 text-red-600 text-sm font-bold rounded-lg border border-red-100">
-                    <!-- Error messages go here -->
-                </div>
+                <div id="action-error" class="alert alert-error hidden"></div>
 
-                <div class="space-y-3">
-                    <button id="btn-confirm" onclick="confirmBooking()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition-all shadow-md flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <button id="btn-confirm" onclick="confirmBooking()" class="btn btn-primary" style="background-color: var(--success); width: 100%;">
                         <span class="material-symbols-outlined">check_circle</span> Confirm Booking
                     </button>
-                    <button onclick="rejectBooking()" class="w-full bg-white border-2 border-red-100 text-red-600 hover:bg-red-50 font-bold py-3 rounded-xl transition-all flex justify-center items-center gap-2">
+                    <button onclick="rejectBooking()" class="btn btn-danger" style="width: 100%;">
                         <span class="material-symbols-outlined">cancel</span> Reject & Cancel
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Right Column: Visual Room Selection -->
-        <div class="lg:col-span-2">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 min-h-full">
-                <div class="mb-6 border-b border-slate-100 pb-4">
-                    <h2 class="text-xl font-bold text-secondary">Select a room, Confirm if it available</h2>
-                    <p class="text-sm text-slate-500 mt-1">Showing all <strong id="display-type" class="text-primary">...</strong> rooms.</p>
-                </div>
+        <!-- Right Column: Room Selection -->
+        <div class="card">
+            <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                <h3>Select a room</h3>
+                <p class="text-muted" style="font-size: 0.875rem; margin-top: 0.5rem;">
+                    Showing all <strong id="display-type" style="color: var(--secondary);">...</strong> rooms.
+                </p>
+            </div>
 
-                <!-- Dynamic Floor Plan Container -->
-                <div id="floor-plan-container" class="space-y-8">
-                    <div class="text-center py-12 text-slate-400">Loading floor plan...</div>
-                </div>
+            <!-- Dynamic Floor Plan Container -->
+            <div id="floor-plan-container">
+                <div class="text-center text-muted" style="padding: 3rem;">Loading floor plan...</div>
             </div>
         </div>
 
     </div>
-</main>
+</div>
 
 <script src="js/manage-booking.js"></script>
 </body>

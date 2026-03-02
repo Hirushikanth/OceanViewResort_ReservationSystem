@@ -21,26 +21,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const username = document.getElementById('staffUser').value;
         const passwordHash = document.getElementById('staffPass').value;
-        const confirmPass = document.getElementById('staffPassConfirm').value; // NEW
+        const confirmPass = document.getElementById('staffPassConfirm').value;
 
         const msgDiv = document.getElementById('form-msg');
         const btn = this.querySelector('button');
 
-        // NEW: Check if passwords match
+        // Check password match
         if (passwordHash !== confirmPass) {
             msgDiv.textContent = "Error: Passwords do not match!";
-            msgDiv.className = "text-xs font-bold p-2 rounded bg-red-50 text-red-600 block";
+            msgDiv.className = "alert alert-error";
+            msgDiv.classList.remove('hidden');
 
-            // Clear the password fields so the user can try again
             document.getElementById('staffPass').value = '';
             document.getElementById('staffPassConfirm').value = '';
             document.getElementById('staffPass').focus();
 
             setTimeout(() => msgDiv.classList.add('hidden'), 3000);
-            return; // Stop execution, don't send to backend
+            return;
         }
 
         btn.disabled = true;
+        btn.classList.add('btn-disabled');
         btn.innerHTML = 'Creating...';
 
         try {
@@ -59,19 +60,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (response.ok) {
                 msgDiv.textContent = "Staff created successfully!";
-                msgDiv.className = "text-xs font-bold p-2 rounded bg-green-50 text-green-600 block";
+                msgDiv.className = "alert alert-success";
                 this.reset();
                 loadStaff(); // Refresh table
             } else {
                 const data = await response.json();
-                msgDiv.textContent = data.error || "Failed to create staff (Username exists?)";
-                msgDiv.className = "text-xs font-bold p-2 rounded bg-red-50 text-red-600 block";
+                msgDiv.textContent = data.error || "Failed to create staff.";
+                msgDiv.className = "alert alert-error";
             }
         } catch (error) {
             msgDiv.textContent = "Connection error.";
-            msgDiv.className = "text-xs font-bold p-2 rounded bg-red-50 text-red-600 block";
+            msgDiv.className = "alert alert-error";
         } finally {
+            msgDiv.classList.remove('hidden');
             btn.disabled = false;
+            btn.classList.remove('btn-disabled');
             btn.innerHTML = 'Create Staff Account';
             setTimeout(() => msgDiv.classList.add('hidden'), 3000);
         }
@@ -83,7 +86,7 @@ async function loadStaff() {
     const tableBody = document.getElementById('staff-table-body');
     const token = localStorage.getItem('token');
 
-    tableBody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-slate-400">Loading...</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="4" class="text-center text-muted" style="padding: 2rem;">Loading...</td></tr>';
 
     try {
         const response = await fetch(`${API_BASE}/users`, {
@@ -95,22 +98,22 @@ async function loadStaff() {
             const staffList = await response.json();
 
             if (staffList.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-slate-400">No staff members found.</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="4" class="text-center text-muted" style="padding: 2rem;">No staff members found.</td></tr>';
                 return;
             }
 
             tableBody.innerHTML = '';
             staffList.forEach(staff => {
                 tableBody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="p-4 text-slate-500 font-mono text-xs">#${staff.id}</td>
-                        <td class="p-4 font-bold text-slate-700">${staff.username}</td>
-                        <td class="p-4">
-                            <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded text-xs font-bold">STAFF</span>
+                    <tr>
+                        <td class="text-muted" style="font-family: monospace;">#${staff.id}</td>
+                        <td style="font-weight: 700;">${staff.username}</td>
+                        <td>
+                            <span class="badge" style="background-color: var(--primary); color: white;">STAFF</span>
                         </td>
-                        <td class="p-4 text-right">
-                            <button onclick="deleteStaff(${staff.id})" class="text-red-500 hover:bg-red-50 p-2 rounded transition-colors" title="Remove Staff">
-                                <span class="material-symbols-outlined text-lg">delete</span>
+                        <td class="text-right">
+                            <button onclick="deleteStaff(${staff.id})" class="btn btn-danger" style="padding: 0.25rem 0.5rem;" title="Remove Staff">
+                                <span class="material-symbols-outlined" style="font-size: 1.25rem;">delete</span>
                             </button>
                         </td>
                     </tr>
@@ -118,7 +121,7 @@ async function loadStaff() {
             });
         }
     } catch (error) {
-        tableBody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-red-500">Connection error.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="4" class="text-center" style="padding: 2rem; color: var(--error);">Connection error.</td></tr>';
     }
 }
 

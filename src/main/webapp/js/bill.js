@@ -62,13 +62,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         if(el) el.textContent = text || "-";
     }
 
+    // Update Error Display to use Vanilla CSS classes
     function showError(msg) {
         const container = document.getElementById('invoice-container');
         container.innerHTML = `
-            <div class="text-center p-12">
-                <h2 class="text-2xl font-bold text-red-500 mb-2">Error</h2>
-                <p class="text-slate-600">${msg}</p>
-                <button onclick="window.close()" class="mt-6 bg-slate-200 px-4 py-2 rounded-lg font-bold">Close</button>
+            <div style="text-align: center; padding: 3rem;">
+                <h2 style="color: var(--error); font-size: 1.5rem; margin-bottom: 1rem;">Error</h2>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">${msg}</p>
+                <button onclick="window.close()" class="btn btn-secondary" style="background: var(--bg-light); color: var(--text-dark);">Close</button>
             </div>
         `;
     }

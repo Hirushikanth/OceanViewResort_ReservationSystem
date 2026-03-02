@@ -16,13 +16,15 @@ function switchTab(tab) {
     if (tab === 'login') {
         loginForm.classList.remove('hidden');
         regForm.classList.add('hidden');
-        loginTab.className = "flex-1 py-4 text-sm font-bold text-primary border-b-2 border-primary transition-colors";
-        regTab.className = "flex-1 py-4 text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors";
+        // Updated classes for pure CSS
+        loginTab.className = "tab-btn tab-active";
+        regTab.className = "tab-btn tab-inactive";
     } else {
         loginForm.classList.add('hidden');
         regForm.classList.remove('hidden');
-        regTab.className = "flex-1 py-4 text-sm font-bold text-primary border-b-2 border-primary transition-colors";
-        loginTab.className = "flex-1 py-4 text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors";
+        // Updated classes for pure CSS
+        regTab.className = "tab-btn tab-active";
+        loginTab.className = "tab-btn tab-inactive";
     }
 }
 
@@ -42,8 +44,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- HELPER: Validation UI ---
     function setValidationStatus(input, isValid) {
-        const parent = input.parentElement;
-        const errorMsg = parent.querySelector('.validation-msg');
+        const parent = input.parentElement; // .input-wrapper
+        const errorMsg = parent.nextElementSibling; // .validation-msg
         const checkIcon = parent.querySelector('.check-icon');
 
         if (isValid) {

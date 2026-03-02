@@ -4,14 +4,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const localRole = localStorage.getItem('role');
     const localUser = localStorage.getItem('username');
 
+    // Security Check
     if (!localToken) {
         window.location.href = 'login.html';
         return;
     }
 
+    // Welcome Message
     const welcomeEl = document.getElementById('welcomeMsg');
     if(welcomeEl && localUser) {
         welcomeEl.textContent = `Welcome, ${localUser} (${localRole})`;
+        welcomeEl.classList.remove('hidden'); // Ensure it's visible
     }
 
     // --- SETUP UI BASED ON ROLE ---
@@ -24,13 +27,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if(staffActions) {
             staffActions.classList.remove('hidden');
 
+            // Admin Buttons (Rewritten for Vanilla CSS)
             if (localRole === 'ADMIN') {
                 const adminBtnHtml = `
-                    <a href="manage-rooms.html" class="flex items-center gap-2 bg-primary hover:bg-sky-500 text-white px-4 py-2.5 rounded-xl font-bold transition-all text-sm ml-4 shadow-sm">
-                        <span class="material-symbols-outlined text-sm">bed</span> Manage Rooms
+                    <a href="manage-rooms.html" class="btn btn-secondary" style="font-size: 0.875rem; padding: 0.5rem 1rem;">
+                        <span class="material-symbols-outlined" style="font-size: 1.1rem;">bed</span> Manage Rooms
                     </a>
-                    <a href="staff.html" class="flex items-center gap-2 bg-secondary hover:bg-slate-700 text-white px-4 py-2.5 rounded-xl font-bold transition-all text-sm ml-4">
-                        <span class="material-symbols-outlined text-sm">manage_accounts</span> Manage Staff
+                    <a href="staff.html" class="btn btn-primary" style="font-size: 0.875rem; padding: 0.5rem 1rem;">
+                        <span class="material-symbols-outlined" style="font-size: 1.1rem;">manage_accounts</span> Manage Staff
                     </a>
                 `;
                 staffActions.insertAdjacentHTML('beforeend', adminBtnHtml);
@@ -52,7 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
     async function loadBookings(endpoint) {
         const tableBody = document.getElementById('bookings-table-body');
         if(!tableBody) return;
-        tableBody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-400">Loading reservations...</td></tr>';
+
+        tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted" style="padding: 2rem;">Loading reservations...</td></tr>';
 
         try {
             const response = await fetch(`${API_BASE}${endpoint}`, {
@@ -64,17 +69,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 const bookings = await response.json();
                 renderTable(bookings);
             } else {
-                tableBody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-red-500 font-bold">Failed to load data.</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="6" class="text-center" style="padding: 2rem; color: var(--error);">Failed to load data.</td></tr>';
             }
         } catch (error) {
-            tableBody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-red-500 font-bold">Connection error.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="6" class="text-center" style="padding: 2rem; color: var(--error);">Connection error.</td></tr>';
         }
     }
 
     function renderTable(bookings) {
         const tableBody = document.getElementById('bookings-table-body');
+
         if (bookings.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-400 italic">No reservations found.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted" style="padding: 2rem; font-style: italic;">No reservations found.</td></tr>';
             return;
         }
 
@@ -82,43 +88,55 @@ document.addEventListener('DOMContentLoaded', function() {
 
         bookings.forEach(b => {
             const row = document.createElement('tr');
-            row.className = "hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0";
 
+            // Status Badge Logic (Using style.css .badge classes)
             let statusBadge = '';
-            if (b.status === 'CONFIRMED') statusBadge = '<span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-bold text-green-700 ring-1 ring-inset ring-green-600/20">Confirmed</span>';
-            else if (b.status === 'PENDING') statusBadge = '<span class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-bold text-yellow-800 ring-1 ring-inset ring-yellow-600/20">Pending</span>';
-            else statusBadge = '<span class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-bold text-red-700 ring-1 ring-inset ring-red-600/10">Cancelled</span>';
+            if (b.status === 'CONFIRMED') statusBadge = '<span class="badge badge-confirmed">Confirmed</span>';
+            else if (b.status === 'PENDING') statusBadge = '<span class="badge badge-pending">Pending</span>';
+            else statusBadge = '<span class="badge badge-cancelled">Cancelled</span>';
 
+            // Action Buttons Logic
             let actionBtn = '';
             if (localRole === 'CUSTOMER') {
-                if (b.status === 'CONFIRMED') actionBtn = `<a href="bill.html?id=${b.id}" target="_blank" class="inline-flex items-center gap-1 text-primary hover:text-sky-600 font-bold text-xs transition-colors"><span class="material-symbols-outlined text-sm">receipt_long</span> Bill</a>`;
+                if (b.status === 'CONFIRMED') {
+                    // Bill Button
+                    actionBtn = `<a href="bill.html?id=${b.id}" target="_blank" class="btn btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
+                                    <span class="material-symbols-outlined" style="font-size: 1rem;">receipt_long</span> Bill
+                                 </a>`;
+                }
             } else {
                 if (b.status === 'PENDING') {
-                    // Redirects to new manage-booking.html page
-                    actionBtn = `<a href="manage-booking.html?id=${b.id}" class="bg-secondary hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm inline-block">Manage</a>`;
+                    // Manage Button for Staff
+                    actionBtn = `<a href="manage-booking.html?id=${b.id}" class="btn btn-primary" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">Manage</a>`;
                 } else if (b.status === 'CONFIRMED') {
-                    actionBtn = `<span class="text-slate-500 text-xs font-mono bg-slate-100 px-2 py-1 rounded">Room ${b.roomId}</span>`;
+                    // Room display for confirmed items
+                    actionBtn = `<span class="badge badge-inactive" style="font-family: monospace;">Room ${b.roomId}</span>`;
                 }
             }
 
             const resRef = b.reservationNumber ? b.reservationNumber : `#${b.id}`;
 
+            // Injecting HTML with Clean CSS Styles
             row.innerHTML = `
-                <td class="p-4 font-mono text-xs text-slate-500 select-all">${resRef}</td>
-                <td class="p-4 font-bold text-secondary text-sm">${b.requestedType}</td>
-                <td class="p-4 text-slate-500 text-xs">
-                    <div class="flex flex-col">
+                <td style="font-family: monospace; color: var(--text-muted);">${resRef}</td>
+                <td style="font-weight: 700; color: var(--primary);">${b.requestedType}</td>
+                <td style="font-size: 0.875rem;">
+                    <div style="display: flex; flex-direction: column;">
                         <span>In: <strong>${b.checkInDate}</strong></span>
                         <span>Out: <strong>${b.checkOutDate}</strong></span>
                     </div>
                 </td>
-                <td class="p-4">
-                    <div class="font-bold text-slate-700 text-sm">${b.guestName}</div>
-                    <div class="text-xs text-slate-500 flex items-center gap-1 mt-1"><span class="material-symbols-outlined text-[14px]">call</span> ${b.contactNumber}</div>
-                    <div class="text-xs text-slate-400 flex items-start gap-1 mt-1 max-w-[200px]"><span class="material-symbols-outlined text-[14px]">location_on</span> <span class="truncate">${b.address}</span></div>
+                <td>
+                    <div style="font-weight: 700;">${b.guestName}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
+                        <span class="material-symbols-outlined" style="font-size: 14px; vertical-align: middle;">call</span> ${b.contactNumber}
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                        <span class="material-symbols-outlined" style="font-size: 14px; vertical-align: middle;">location_on</span> ${b.address}
+                    </div>
                 </td>
-                <td class="p-4">${statusBadge}</td>
-                <td class="p-4 text-right">${actionBtn}</td>
+                <td>${statusBadge}</td>
+                <td class="text-right">${actionBtn}</td>
             `;
             tableBody.appendChild(row);
         });

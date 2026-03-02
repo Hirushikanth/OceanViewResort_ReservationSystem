@@ -4,124 +4,167 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Book a Room - Ocean View Resort</title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: { primary: "#13b6ec", secondary: "#0e4b5d", surface: "#ffffff", background: "#f8fafc" },
-          fontFamily: { sans: ['"Plus Jakarta Sans"', "sans-serif"] }
-        }
+
+  <!-- Link Global CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Page Specific Styles -->
+  <style>
+    .booking-card {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0; /* Override default card padding to allow full-width header */
+      overflow: hidden;
+    }
+
+    .booking-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 2rem;
+      color: white;
+      position: relative;
+    }
+
+    .booking-header h1 {
+      color: white; /* Override default h1 color */
+      margin-bottom: 0.5rem;
+    }
+
+    .booking-header p {
+      opacity: 0.9;
+      font-size: 0.875rem;
+    }
+
+    .form-section {
+      padding: 2rem;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+
+    /* Grid Layout for Inputs */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 640px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+        gap: 1rem;
       }
     }
-  </script>
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+<body>
 
 <!-- Header -->
-<header class="bg-white border-b border-slate-100 px-6 py-4 sticky top-0 z-50 shadow-sm">
-  <div class="max-w-7xl mx-auto flex items-center justify-between">
-    <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
-      <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-        <span class="material-symbols-outlined text-2xl">water_lux</span>
+<header class="header">
+  <div class="header-content">
+    <div class="logo-group" onclick="window.location.href='index.html'">
+      <div class="logo-icon">
+        <span class="material-symbols-outlined">water_lux</span>
       </div>
-      <h2 class="text-xl font-bold tracking-tight text-secondary">Ocean View Resort</h2>
+      <h2>Ocean View Resort</h2>
     </div>
-    <nav class="flex items-center gap-6">
-      <a href="dashboard.html" class="text-sm font-bold text-slate-500 hover:text-primary transition-colors">My Dashboard</a>
-      <button id="logoutBtn" class="text-sm font-bold text-red-500 hover:text-red-700 transition-colors flex items-center gap-1">
-        <span class="material-symbols-outlined text-lg">logout</span> Logout
+    <div style="display: flex; align-items: center; gap: 1.5rem;">
+      <a href="dashboard.html" style="font-size: 0.875rem; font-weight: 700; color: var(--text-muted);">My Dashboard</a>
+      <button id="logoutBtn" style="background: none; border: none; color: var(--error); font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.25rem; font-size: 0.875rem;">
+        <span class="material-symbols-outlined" style="font-size: 1.25rem;">logout</span> Logout
       </button>
-    </nav>
+    </div>
   </div>
 </header>
 
 <!-- Main Content -->
-<main class="flex-grow container mx-auto px-4 py-12">
-  <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
+<div class="container">
 
-    <div class="bg-secondary p-8 text-white relative overflow-hidden">
-      <div class="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-      <h1 class="text-3xl font-bold mb-2 relative z-10">Make a Reservation</h1>
-      <p class="text-slate-300 relative z-10">Fill in your details to secure your stay.</p>
+  <div class="card booking-card">
+
+    <!-- Banner -->
+    <div class="booking-header">
+      <h1>Make a Reservation</h1>
+      <p>Fill in your details to secure your stay in paradise.</p>
     </div>
 
-    <form id="booking-form" class="p-8 space-y-6">
+    <!-- Form -->
+    <form id="booking-form" class="form-section">
 
       <!-- Guest Details -->
-      <div class="space-y-4">
-        <h3 class="text-lg font-bold text-secondary flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">person</span> Guest Information
-        </h3>
+      <div class="section-title">
+        <span class="material-symbols-outlined">person</span> Guest Information
+      </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">Full Name</label>
-            <input type="text" id="guestName" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary" placeholder="e.g. John Doe">
-          </div>
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">Contact Number</label>
-            <input type="tel" id="contactNumber" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary" placeholder="e.g. 077 123 4567">
-          </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="guestName" required class="form-input" placeholder="e.g. John Doe">
         </div>
-
-        <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1">Billing Address</label>
-          <textarea id="address" required rows="2" class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary" placeholder="e.g. 123 Beach Road, Galle"></textarea>
+        <div class="form-group">
+          <label class="form-label">Contact Number</label>
+          <input type="tel" id="contactNumber" required class="form-input" placeholder="e.g. 077 123 4567">
         </div>
       </div>
 
-      <hr class="border-slate-100">
+      <div class="form-group">
+        <label class="form-label">Billing Address</label>
+        <textarea id="address" required rows="2" class="form-input" placeholder="e.g. 123 Beach Road, Galle" style="resize: vertical; min-height: 80px;"></textarea>
+      </div>
 
       <!-- Room & Dates -->
-      <div class="space-y-4">
-        <h3 class="text-lg font-bold text-secondary flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">bed</span> Stay Details
-        </h3>
+      <div class="section-title" style="margin-top: 2rem;">
+        <span class="material-symbols-outlined">bed</span> Stay Details
+      </div>
 
-        <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1">Room Type</label>
-          <!-- DYNAMIC DROPDOWN -->
-          <select id="requestedType" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary">
-            <option value="" disabled selected>Loading room types...</option>
-          </select>
-          <p class="text-xs text-slate-500 mt-1">Prices are per night.</p>
+      <div class="form-group">
+        <label class="form-label">Room Type</label>
+        <!-- DYNAMIC DROPDOWN POPULATED BY app.js -->
+        <select id="requestedType" required class="form-input">
+          <option value="" disabled selected>Loading room types...</option>
+        </select>
+        <p class="text-muted" style="font-size: 0.75rem; margin-top: 0.25rem;">Prices are per night.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Check-In Date</label>
+          <input type="date" id="checkInDate" required class="form-input">
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">Check-In Date</label>
-            <input type="date" id="checkInDate" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary">
-          </div>
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">Check-Out Date</label>
-            <input type="date" id="checkOutDate" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary">
-          </div>
+        <div class="form-group">
+          <label class="form-label">Check-Out Date</label>
+          <input type="date" id="checkOutDate" required class="form-input">
         </div>
       </div>
 
       <!-- Error/Success Messages -->
-      <div id="form-error" class="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium hidden border border-red-100"></div>
-      <div id="form-success" class="bg-green-50 text-green-600 p-3 rounded-lg text-sm font-medium hidden border border-green-100"></div>
+      <div id="form-error" class="alert alert-error hidden text-center"></div>
+      <div id="form-success" class="alert alert-success hidden text-center"></div>
 
       <!-- Submit -->
-      <div class="pt-4">
-        <button type="submit" class="w-full bg-primary hover:bg-sky-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-primary/20 flex justify-center items-center gap-2 text-lg">
+      <div style="margin-top: 2rem;">
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;">
           <span>Request Booking</span>
           <span class="material-symbols-outlined">arrow_forward</span>
         </button>
-        <p class="text-center text-xs text-slate-400 mt-3">You won't be charged until confirmation.</p>
+        <p class="text-muted text-center" style="font-size: 0.75rem; margin-top: 1rem;">You won't be charged until confirmation.</p>
       </div>
     </form>
   </div>
-</main>
+</div>
 
-<footer class="bg-white border-t border-slate-100 py-6 text-center text-slate-400 text-sm">
-  &copy; 2023 Ocean View Resort. All rights reserved.
-</footer>
+<!-- Footer -->
+<div class="text-center text-muted text-sm" style="padding: 2rem;">
+  &copy; 2026 Ocean View Resort. All rights reserved.
+</div>
 
 <script src="js/app.js"></script>
 </body>

@@ -22,15 +22,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     // Disable confirm button initially
-    document.getElementById('btn-confirm').disabled = true;
+    const confirmBtn = document.getElementById('btn-confirm');
+    confirmBtn.disabled = true;
+    confirmBtn.classList.add('btn-disabled');
 
     await loadBookingDetails(bookingId);
 });
 
 async function loadBookingDetails(id) {
     try {
-        // Fetch all pending bookings to find the one we need
-        // (Since backend doesn't have a dedicated getBookingById for Staff yet)
+        // Fetch all pending bookings
         const response = await fetch(`${API_BASE}/bookings?status=PENDING`, {
             headers: { 'Authorization': token }
         });
@@ -48,7 +49,7 @@ async function loadBookingDetails(id) {
                 document.getElementById('b-checkin').textContent = currentBooking.checkInDate;
                 document.getElementById('b-checkout').textContent = currentBooking.checkOutDate;
 
-                // Now load the rooms for this type
+                // Load Floor Plan
                 await loadFloorPlan(currentBooking.requestedType);
             } else {
                 alert("Booking not found or already processed.");
@@ -64,7 +65,6 @@ async function loadFloorPlan(requestedType) {
     const container = document.getElementById('floor-plan-container');
 
     try {
-        // Fetch all rooms (No dates provided = returns all rooms)
         const response = await fetch(`${API_BASE}/rooms`, {
             headers: { 'Authorization': token }
         });
@@ -72,11 +72,11 @@ async function loadFloorPlan(requestedType) {
         if (response.ok) {
             const allRooms = await response.json();
 
-            // Filter only rooms that match the requested type
+            // Filter rooms by type
             const matchingRooms = allRooms.filter(r => r.roomType === requestedType);
 
             if (matchingRooms.length === 0) {
-                container.innerHTML = `<div class="p-8 text-center text-red-500 font-bold bg-red-50 rounded-xl border border-red-100">No rooms exist for type: ${requestedType}</div>`;
+                container.innerHTML = `<div class="alert alert-error text-center">No rooms exist for type: ${requestedType}</div>`;
                 return;
             }
 
@@ -88,7 +88,7 @@ async function loadFloorPlan(requestedType) {
                 floors[floorNum].push(room);
             });
 
-            // Sort floors descending (e.g., 3rd floor at the top)
+            // Sort floors descending
             const sortedFloorKeys = Object.keys(floors).sort((a, b) => b - a);
 
             container.innerHTML = ''; // Clear loading text
@@ -96,7 +96,7 @@ async function loadFloorPlan(requestedType) {
             sortedFloorKeys.forEach(floorKey => {
                 const rooms = floors[floorKey];
 
-                // Sort rooms numerically left to right (e.g., 101, 102, 103)
+                // Sort rooms numerically
                 rooms.sort((a, b) => {
                     const numA = parseInt(a.roomNumber.replace(/\D/g, '')) || 0;
                     const numB = parseInt(b.roomNumber.replace(/\D/g, '')) || 0;
@@ -105,20 +105,18 @@ async function loadFloorPlan(requestedType) {
 
                 let floorName = floorKey == 0 ? "Ground Floor" : `Floor ${floorKey}`;
 
+                // Generate Room Buttons with Vanilla CSS Classes
                 let roomHtml = rooms.map(r => `
-                    <button onclick="selectRoom(${r.id}, this)" 
-                            class="room-btn w-20 h-20 flex flex-col items-center justify-center rounded-xl border-2 border-slate-200 bg-white text-slate-700 hover:border-primary hover:text-primary transition-all shadow-sm">
-                        <span class="material-symbols-outlined mb-1">meeting_room</span>
-                        <span class="font-bold text-lg leading-none">${r.roomNumber}</span>
+                    <button onclick="selectRoom(${r.id}, this)" class="room-btn">
+                        <span class="material-symbols-outlined" style="margin-bottom: 0.25rem;">meeting_room</span>
+                        <span style="font-weight: 700; line-height: 1;">${r.roomNumber}</span>
                     </button>
                 `).join('');
 
                 container.innerHTML += `
-                    <div class="flex flex-col md:flex-row items-start md:items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
-                        <div class="w-24 font-bold text-slate-400 uppercase tracking-widest text-xs md:text-right shrink-0">
-                            ${floorName}
-                        </div>
-                        <div class="flex-1 flex flex-wrap gap-3">
+                    <div class="floor-section">
+                        <div class="floor-label">${floorName}</div>
+                        <div class="room-grid">
                             ${roomHtml}
                         </div>
                     </div>
@@ -127,11 +125,11 @@ async function loadFloorPlan(requestedType) {
 
         }
     } catch (error) {
-        container.innerHTML = `<div class="text-red-500 text-center">Failed to load rooms.</div>`;
+        container.innerHTML = `<div class="alert alert-error text-center">Failed to load rooms.</div>`;
     }
 }
 
-// Utility to extract floor from string (e.g., "305" -> 3)
+// Utility to extract floor number
 function getFloorNumber(roomStr) {
     const num = parseInt(roomStr.replace(/\D/g, ''));
     if (isNaN(num)) return 0;
@@ -145,18 +143,18 @@ function selectRoom(roomId, btnElement) {
 
     // Reset all buttons
     document.querySelectorAll('.room-btn').forEach(btn => {
-        btn.classList.remove('border-primary', 'bg-primary', 'text-white', 'shadow-lg', 'shadow-primary/30');
-        btn.classList.add('border-slate-200', 'bg-white', 'text-slate-700');
+        btn.classList.remove('selected');
     });
 
     // Highlight selected button
-    btnElement.classList.remove('border-slate-200', 'bg-white', 'text-slate-700');
-    btnElement.classList.add('border-primary', 'bg-primary', 'text-white', 'shadow-lg', 'shadow-primary/30');
+    btnElement.classList.add('selected');
 
     // Enable confirm button
-    document.getElementById('btn-confirm').disabled = false;
+    const confirmBtn = document.getElementById('btn-confirm');
+    confirmBtn.disabled = false;
+    confirmBtn.classList.remove('btn-disabled');
 
-    // Clear any previous errors
+    // Clear errors
     const errorDiv = document.getElementById('action-error');
     errorDiv.classList.add('hidden');
 }
@@ -170,6 +168,7 @@ async function confirmBooking() {
 
     errorDiv.classList.add('hidden');
     confirmBtn.disabled = true;
+    confirmBtn.classList.add('btn-disabled');
     confirmBtn.innerHTML = "Checking availability...";
 
     try {
@@ -187,26 +186,27 @@ async function confirmBooking() {
         });
 
         if (response.ok) {
-            // Success!
             alert("Booking successfully confirmed!");
             window.location.href = 'dashboard.html';
         } else if (response.status === 409) {
-            // Backend detected the room is occupied for these dates
-            errorDiv.innerHTML = `<span class="material-symbols-outlined align-middle mr-1 text-lg">warning</span> 
-                                  The selected room is occupied for these dates. Please suggest/select another room.`;
+            errorDiv.innerHTML = `<span class="material-symbols-outlined" style="vertical-align: middle; margin-right: 4px;">warning</span> 
+                                  The selected room is occupied for these dates.`;
             errorDiv.classList.remove('hidden');
             confirmBtn.disabled = false;
+            confirmBtn.classList.remove('btn-disabled');
             confirmBtn.innerHTML = `<span class="material-symbols-outlined">check_circle</span> Confirm Booking`;
         } else {
             const data = await response.json();
             errorDiv.textContent = data.error || "Failed to confirm booking.";
             errorDiv.classList.remove('hidden');
             confirmBtn.disabled = false;
+            confirmBtn.classList.remove('btn-disabled');
         }
     } catch (err) {
         errorDiv.textContent = "Server connection error.";
         errorDiv.classList.remove('hidden');
         confirmBtn.disabled = false;
+        confirmBtn.classList.remove('btn-disabled');
     }
 }
 

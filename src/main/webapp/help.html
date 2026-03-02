@@ -4,54 +4,96 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Customer Help Center - Ocean View Resort</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: { primary: "#13b6ec", secondary: "#0e4b5d" },
-          fontFamily: { sans: ['"Plus Jakarta Sans"', "sans-serif"] }
-        }
-      }
+
+  <!-- Link Global CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Page Specific Styles -->
+  <style>
+    .help-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
     }
-  </script>
+
+    .help-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .icon-box {
+      width: 3rem;
+      height: 3rem;
+      background-color: rgba(19, 182, 236, 0.1);
+      color: var(--secondary);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+    }
+    .dot-pending { background-color: var(--warning); }
+    .dot-confirmed { background-color: var(--success); }
+
+    .help-card-title {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-dark);
+    }
+
+    .help-card-text {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+<body>
 
 <!-- Header -->
-<header class="bg-white border-b border-slate-100 px-6 py-4 sticky top-0 z-50 shadow-sm">
-  <div class="max-w-4xl mx-auto flex items-center justify-between">
-    <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
-      <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-        <span class="material-symbols-outlined text-2xl">water_lux</span>
+<header class="header">
+  <div class="header-content">
+    <div class="logo-group" onclick="window.location.href='index.html'">
+      <div class="logo-icon">
+        <span class="material-symbols-outlined">water_lux</span>
       </div>
-      <h1 class="text-xl font-bold text-secondary">Help Center</h1>
+      <h2>Help Center</h2>
     </div>
-    <div class="flex gap-4">
-      <a href="index.html" class="text-sm font-bold text-slate-500 hover:text-primary transition-colors">Home</a>
-      <a href="login.html" class="text-sm font-bold text-slate-500 hover:text-primary transition-colors">Login</a>
+    <div style="display: flex; gap: 1.5rem; align-items: center;">
+      <a href="index.html" style="font-weight: 700; font-size: 0.875rem; color: var(--text-muted);">Home</a>
+      <a href="login.html" style="font-weight: 700; font-size: 0.875rem; color: var(--text-muted);">Login</a>
     </div>
   </div>
 </header>
 
-<main class="flex-grow max-w-4xl mx-auto px-4 py-12 w-full">
+<div class="container">
 
-  <div class="text-center mb-12">
-    <h2 class="text-3xl font-bold text-secondary mb-4">How can we help you today?</h2>
-    <p class="text-slate-500">Find answers to common questions about booking your stay at Ocean View Resort.</p>
+  <div class="help-header">
+    <h2 style="font-size: 2rem; margin-bottom: 1rem;">How can we help you today?</h2>
+    <p class="text-muted">Find answers to common questions about booking your stay at Ocean View Resort.</p>
   </div>
 
-  <div class="grid gap-6 md:grid-cols-2">
+  <div class="help-grid">
 
     <!-- Card 1: Booking -->
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-      <div class="w-12 h-12 bg-sky-50 rounded-xl flex items-center justify-center text-primary mb-4">
-        <span class="material-symbols-outlined text-2xl">calendar_add_on</span>
+    <div class="card">
+      <div class="icon-box">
+        <span class="material-symbols-outlined">calendar_add_on</span>
       </div>
-      <h3 class="text-lg font-bold text-slate-800 mb-2">How to Book a Room</h3>
-      <p class="text-slate-600 text-sm leading-relaxed">
+      <h3 class="help-card-title">How to Book a Room</h3>
+      <p class="help-card-text">
         1. Create an account or Log in.<br>
         2. Click "New Reservation" on your dashboard.<br>
         3. Select your dates and preferred room type.<br>
@@ -60,37 +102,37 @@
     </div>
 
     <!-- Card 2: Status -->
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-      <div class="w-12 h-12 bg-sky-50 rounded-xl flex items-center justify-center text-primary mb-4">
-        <span class="material-symbols-outlined text-2xl">pending_actions</span>
+    <div class="card">
+      <div class="icon-box">
+        <span class="material-symbols-outlined">pending_actions</span>
       </div>
-      <h3 class="text-lg font-bold text-slate-800 mb-2">Check Booking Status</h3>
-      <p class="text-slate-600 text-sm leading-relaxed">
+      <h3 class="help-card-title">Check Booking Status</h3>
+      <p class="help-card-text">
         You can track the status of your reservation directly from your <strong>Dashboard</strong>.
         <br><br>
-        <span class="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-1"></span> <strong>Pending:</strong> Awaiting staff confirmation.<br>
-        <span class="inline-block w-2 h-2 rounded-full bg-green-500 mr-1"></span> <strong>Confirmed:</strong> Your room is assigned and ready!
+        <span class="status-dot dot-pending"></span> <strong>Pending:</strong> Awaiting staff confirmation.<br>
+        <span class="status-dot dot-confirmed"></span> <strong>Confirmed:</strong> Your room is assigned and ready!
       </p>
     </div>
 
     <!-- Card 3: Billing -->
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-      <div class="w-12 h-12 bg-sky-50 rounded-xl flex items-center justify-center text-primary mb-4">
-        <span class="material-symbols-outlined text-2xl">receipt_long</span>
+    <div class="card">
+      <div class="icon-box">
+        <span class="material-symbols-outlined">receipt_long</span>
       </div>
-      <h3 class="text-lg font-bold text-slate-800 mb-2">View Your Bill</h3>
-      <p class="text-slate-600 text-sm leading-relaxed">
+      <h3 class="help-card-title">View Your Bill</h3>
+      <p class="help-card-text">
         Once your booking is <strong>Confirmed</strong>, a "Bill" button will appear next to your reservation in the dashboard history. Click it to view or print your official invoice.
       </p>
     </div>
 
     <!-- Card 4: Support -->
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-      <div class="w-12 h-12 bg-sky-50 rounded-xl flex items-center justify-center text-primary mb-4">
-        <span class="material-symbols-outlined text-2xl">support_agent</span>
+    <div class="card">
+      <div class="icon-box">
+        <span class="material-symbols-outlined">support_agent</span>
       </div>
-      <h3 class="text-lg font-bold text-slate-800 mb-2">Contact Support</h3>
-      <p class="text-slate-600 text-sm leading-relaxed">
+      <h3 class="help-card-title">Contact Support</h3>
+      <p class="help-card-text">
         Need to cancel or modify a booking? Please contact our front desk directly.
         <br><br>
         <strong>Phone:</strong> +94 77 123 4567<br>
@@ -100,15 +142,17 @@
 
   </div>
 
-  <div class="mt-12 text-center">
-    <a href="login.html" class="inline-flex items-center justify-center px-6 py-3 bg-primary hover:bg-sky-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/20">
+  <div class="text-center">
+    <a href="login.html" class="btn btn-primary" style="padding: 1rem 2rem; border-radius: var(--radius-lg);">
       Go to Login Page
     </a>
   </div>
-</main>
+</div>
 
-<footer class="bg-white border-t border-slate-100 py-6 text-center text-slate-400 text-sm">
-  &copy; 2023 Ocean View Resort. All rights reserved.
-</footer>
+<!-- Footer -->
+<div class="text-center text-muted text-sm" style="padding: 2rem; border-top: 1px solid var(--border-color); background-color: var(--surface);">
+  &copy; 2024 Ocean View Resort. All rights reserved.
+</div>
+
 </body>
 </html>
