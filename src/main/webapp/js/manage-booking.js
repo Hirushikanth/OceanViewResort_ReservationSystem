@@ -46,8 +46,8 @@ async function loadBookingDetails(id) {
                 document.getElementById('b-contact').textContent = currentBooking.contactNumber;
                 document.getElementById('b-type').textContent = currentBooking.requestedType;
                 document.getElementById('display-type').textContent = currentBooking.requestedType;
-                document.getElementById('b-checkin').textContent = currentBooking.checkInDate;
-                document.getElementById('b-checkout').textContent = currentBooking.checkOutDate;
+                document.getElementById('b-checkin').textContent = formatDate(currentBooking.checkInDate);
+                document.getElementById('b-checkout').textContent = formatDate(currentBooking.checkOutDate);
 
                 // Load Floor Plan
                 await loadFloorPlan(currentBooking.requestedType);
@@ -241,3 +241,19 @@ async function rejectBooking() {
         alert("Server error.");
     }
 }
+
+function formatDate(dateInput) {
+    if (!dateInput) return '-';
+
+    const date = new Date(dateInput);
+
+    // Check if valid date object
+    if (isNaN(date.getTime())) return dateInput;
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+}
+

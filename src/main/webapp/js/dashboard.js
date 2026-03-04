@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const welcomeEl = document.getElementById('welcomeMsg');
     if(welcomeEl && localUser) {
         welcomeEl.textContent = `Welcome, ${localUser} (${localRole})`;
-        welcomeEl.classList.remove('hidden'); // Ensure it's visible
+        welcomeEl.classList.remove('hidden');
     }
 
     // --- SETUP UI BASED ON ROLE ---
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if(staffActions) {
             staffActions.classList.remove('hidden');
 
-            // Admin Buttons (Rewritten for Vanilla CSS)
+            // Admin Buttons
             if (localRole === 'ADMIN') {
                 const adminBtnHtml = `
                     <a href="manage-rooms.html" class="btn btn-secondary" style="font-size: 0.875rem; padding: 0.5rem 1rem;">
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         bookings.forEach(b => {
             const row = document.createElement('tr');
 
-            // Status Badge Logic (Using style.css .badge classes)
+            // Status Badge Logic
             let statusBadge = '';
             if (b.status === 'CONFIRMED') statusBadge = '<span class="badge badge-confirmed">Confirmed</span>';
             else if (b.status === 'PENDING') statusBadge = '<span class="badge badge-pending">Pending</span>';
@@ -99,17 +99,14 @@ document.addEventListener('DOMContentLoaded', function() {
             let actionBtn = '';
             if (localRole === 'CUSTOMER') {
                 if (b.status === 'CONFIRMED') {
-                    // Bill Button
                     actionBtn = `<a href="bill.html?id=${b.id}" target="_blank" class="btn btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
                                     <span class="material-symbols-outlined" style="font-size: 1rem;">receipt_long</span> Bill
                                  </a>`;
                 }
             } else {
                 if (b.status === 'PENDING') {
-                    // Manage Button for Staff
                     actionBtn = `<a href="manage-booking.html?id=${b.id}" class="btn btn-primary" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">Manage</a>`;
                 } else if (b.status === 'CONFIRMED') {
-                    // Room display for confirmed items
                     actionBtn = `<span class="badge badge-inactive" style="font-family: monospace;">Room ${b.roomId}</span>`;
                 }
             }
@@ -122,8 +119,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td style="font-weight: 700; color: var(--primary);">${b.requestedType}</td>
                 <td style="font-size: 0.875rem;">
                     <div style="display: flex; flex-direction: column;">
-                        <span>In: <strong>${b.checkInDate}</strong></span>
-                        <span>Out: <strong>${b.checkOutDate}</strong></span>
+                        <!-- UPDATED: Added formatDate() -->
+                        <span>In: <strong>${formatDate(b.checkInDate)}</strong></span>
+                        <span>Out: <strong>${formatDate(b.checkOutDate)}</strong></span>
                     </div>
                 </td>
                 <td>
@@ -141,4 +139,21 @@ document.addEventListener('DOMContentLoaded', function() {
             tableBody.appendChild(row);
         });
     }
+
+    // --- HELPER: DATE FORMATTER ---
+    function formatDate(dateInput) {
+        if (!dateInput) return '-';
+
+        const date = new Date(dateInput);
+
+        // Check if valid date object
+        if (isNaN(date.getTime())) return dateInput;
+
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const year = date.getFullYear();
+
+        return `${day}/${month}/${year}`;
+    }
+
 });

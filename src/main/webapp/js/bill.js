@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // Details
         setText('room-type', data.Room_Type);
-        setText('check-in', data.Check_In);
-        setText('check-out', data.Check_Out);
+        setText('check-in', formatDate(data.Check_In));
+        setText('check-out', formatDate(data.Check_Out));
         setText('status', data.Status);
 
         // Total
@@ -72,5 +72,20 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <button onclick="window.close()" class="btn btn-secondary" style="background: var(--bg-light); color: var(--text-dark);">Close</button>
             </div>
         `;
+    }
+
+    function formatDate(dateInput) {
+        if (!dateInput) return '-';
+
+        const date = new Date(dateInput);
+
+        // Check if valid date object
+        if (isNaN(date.getTime())) return dateInput;
+
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const year = date.getFullYear();
+
+        return `${day}/${month}/${year}`;
     }
 });
